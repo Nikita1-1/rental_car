@@ -1,0 +1,596 @@
+{%extends 'partials/base.html'%}
+{% load static %} 
+{%block content%}
+
+<section>
+    <div class="car_info">
+        <div class="trip_info">
+            <h1 class="info">
+                <span class="dates">
+                    <img class="date_icon" src="/media/date_icon.png" alt="">
+                    {{checkin}}
+                    {{checkout}}
+                </span>
+                <span class="location"><img class="location_img" src="/media/location.png" alt=""> <a href="https://maps.app.goo.gl/U9sMdvDSXXhdX2cZ9" class="listing-address"> <i class=""></i>Pick Up: {{car.location}}  </a> </span>
+                <span class="call_now"><img class="call_img" src="/media/phone.png" alt=""><i class=""></i>Contact: </span>
+                    <p class="info">
+                        Car: 
+                        {{car.make}} 
+                        {{car.model}}
+                        {{car.year}}
+                    </p>
+                    <p id="total-price-display">Total: ${{car_total_price}}</p>
+                </h1>
+            </div>
+        </div>
+      
+      <script>
+        const checkbox = document.getElementById('ack-checkbox');
+        const initials = document.getElementById('initials');
+        const btn = document.getElementById('continue-btn');
+      
+        function updateButtonState() {
+          // enable only if checkbox is checked AND initials field is non-empty
+          btn.disabled = !( checkbox.checked && initials.value.trim().length > 0 );
+        }
+      
+        checkbox.addEventListener('change', updateButtonState);
+        initials.addEventListener('input', updateButtonState);
+      </script>
+      
+
+    <div class="car_features">
+        <h3><i class=""></i>Trip features</h3>
+                <form class="row with-forms margin-top-0" method="POST">
+                    {% csrf_token %}
+                    
+                    <input type="hidden" class="car_slug_{{car.slug}}" name='car_slug' value="{{car.slug}}" id="car_slug">
+                    
+                    <input type="hidden" class="car_id_{{car.id}}" name='car_id' value="{{car.id}}" id="car_id">
+                    <input type="hidden" class="car_make_{{car.make}}" name="make" value="{{car.make}}" id="car_make">
+                    <input type="hidden" class="car_model_{{car.model}}" name="model" value="{{car.model}}" id="car_model">
+                    <input type="hidden" class="car_year_{{car.year}}" name="year" value="{{car.year}}" id="car_year">
+                    <input type="hidden" class="checkin_{{checkin}}" name="checkin" value="{{checkin}}" id="checkin">
+                    <input type="hidden" class="checkout_{{checkout}}" name="checkout" value="{{checkout}}" id="checkout">
+                    <input type="hidden" class="total_price_{{total_price}}" name="total_price" value="{{car_total_price}}" id="total_price">
+                    <input type="hidden" class="check_in_time_{{check_in_time}}" name="check_in_time" value="{{check_in_time}}" id="check_in_time">
+                    <input type="hidden" class="check_out_time_{{check_out_time}}" name="check_out_time" value="{{check_out_time}}" id="check_out_time">
+
+    
+
+                    <div class="additional_delivery_option">
+                        <div class="delivery">
+                          <label for="delivery-option">Delivery Option</label>
+                          <select name="delivery" id="delivery-option" required>
+                            <option value="">Pick your delivery</option>
+                            {% for delivery in deliveries %}
+                              <option value="{{ delivery.delivery}}">
+                                {{ delivery.delivery }} - ${{ delivery.price }}
+                              </option>
+                            {% endfor %}
+                          </select>
+                        </div>
+                      
+                        <!-- This input will be shown only when "delivery to you" is selected -->
+                        <div id="address-input" style="display: none; margin-top: 10px;">
+                          <label for="delivery-address">Enter delivery address</label>
+                          <input type="text" id="delivery-address" name="delivery_address" placeholder="Enter your address" />
+                        </div>
+                      </div>
+
+
+                    <div class="flight_number">
+                        <label for="">Flight Number</label>
+                        <input type="text" name="flight_number" id="flight_number" value="" placeholder="Enter your flight number" >
+                    </div>
+                    
+                    <div class="additional_baby_seat">
+                        <div class="baby_option">
+                            <a href="#">Select A Baby Seat</a>
+                            <select name="baby_seat" id="seat-option" class="" required>
+                                <option value="">Select a baby seat</option>
+                                {% for seat in baby_seats %}
+                                <option value="{{ seat.slug }}">{{ seat.name }} - ${{ seat.price }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="additional_rack">
+                        <div class="rack ">
+                            <a href="#">Select a rack</a>
+                            <select name="rack" class="" id="rack" required>
+                                <option value="{{rack.name}} - ${{rack.price}}">Rack</option>
+                                {% for rack in racks %}
+                                <option value="{{rack.slug}}">{{rack.name}} - ${{ rack.price }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="toggle_wrapper">
+                        <label class="toggle_lable" for="prepaid_fuel">Prepaid Fuel</label>
+                        <label class="switch">    
+                            <input type="checkbox" name="prepaid_fuel" id="prepaid_fuel" value="False" {% if booking.prepaid_fuel %}checked{% endif %}>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle_wrapper">
+                        <label class="toggle_lable" for="second_driver">Second Driver</label>
+                        <label class="switch">
+                            <input type="checkbox" name="second_driver" id="additional_driver" value="False">{% if booking.additional_driver %}checked{% endif %}>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <button type="submit" data-index="{{car.id}}" class="add-to-selection">Book</button>
+                </form>
+
+</section>
+
+
+<style>
+
+    .signature-form{
+        position: absolute;
+    right: 60px;
+    width: 600px;
+    top: 400px;
+    height: 408px;
+    border: 2px solid white;
+    padding: 20px;
+    border-radius: 20px;
+    }
+
+    .announcment{
+        font-size: 24px;
+        position:relative;
+        color: white;
+        padding: 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    section {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        width: 100%;
+        height: 100vh;
+    }
+
+    section > .car_info{
+        position: absolute;
+        top: 140px;
+        right: 60px;
+        width: 600px;
+        border: 2px solid white;
+        height: auto;
+        border-radius: 20px;
+    }
+
+    section > .car_info > .trip_info{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        align-items: self-start;
+        gap:20px;
+        padding: 20px;
+    }
+
+    section > .car_info > .trip_info > .info{
+        font-size: 24px;
+        font-weight: 600;
+        color:white
+    }
+
+    .dates{
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .date_icon{
+        width: 30px;
+        height: 30px;
+    }
+
+    .location_img{
+        width: 30px;
+        height: 30px;
+    }
+    .location{
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .call_now{
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+     .call_img{
+        width: 30px;
+        height: 30px;
+    }
+
+    .car_features{
+        position: absolute;
+        top: 140px;
+        padding: 40px;
+        left: 60px;
+        width: 600px;
+        border: 2px solid white;
+        height: auto;
+        border-radius: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        z-index:9999999999;
+    }
+
+    .car_features > h3{
+        font-size: 24px;
+        color: white;
+        font-weight: 600;
+        margin-left: -10px;
+    }
+
+    .toggle-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 20px 0;
+        color: white;
+        font-size: 18px;
+    }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 28px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        background-color: black;
+        border-radius: 34px;
+        border:1px solid white;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        transition: .4s;
+    }
+
+    .slider:before {
+        content: "";
+        position: absolute;
+        height: 20px;
+        width: 20px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        border-radius: 50%;
+        transition: .4s;
+    }
+
+    .slider:after {
+        
+        background-color: black;
+    }
+
+    input:checked + .slider {
+        background-color: rgb(168, 168, 168);
+        border: 1px solid black
+    }
+
+    input:checked + .slider:before {
+        transform: translateX(26px);
+        background-color: rgb(21, 20, 20);
+}
+
+select{
+    color: black;
+}
+
+.add-to-selection{
+    width: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    padding: 15px 20px;
+    border: 2px solid white;
+    color: white;
+    border-radius: 20px;
+    margin-top:20px;
+    position: relative;
+    transition: all 0.5s ease;
+  }
+  .add-to-selection:hover{
+    transition: all 0.5s ease;
+    text-decoration: underline;
+  }
+  
+  .add-to-selection:active{
+    background-color: black;
+    color: white;
+    border: 2px solid black;
+
+  }
+
+
+  @media screen and (max-width: 460px){
+    .add-to-selection{
+        width: 310px;
+    }
+    
+    section{
+        max-height: 77vh;
+        overflow-y:auto;
+        margin-bottom:50px;
+        padding-bottom: 80px;
+        scroll-behavior: smooth;
+
+    }
+
+    .car_info{
+        top: 110px !important;
+        right: 10px !important;
+        width: 370px!important;
+    }
+
+    .car_features{
+        top: 380px;
+        left:10px;
+        width: 370px;
+    }
+  }
+
+</style>
+
+<script>
+
+  document.getElementById("delivery-option").addEventListener("change", function () {
+    const selectedValue = this.value.toLowerCase();
+    const addressInput = document.getElementById("address-input");
+
+    // Check if the selected option contains "delivery to you"
+    if (selectedValue.includes("delivery to you")) {
+      addressInput.style.display = "block";
+    } else {
+      addressInput.style.display = "none";
+    }
+  });
+  
+  
+  $(document).ready(function(e) {
+      
+      // Add To Selection
+      $("#delivery-option").on("change",function() {
+       let selected = $(this).val().toLowerCase();
+       if (selected.includes("delivery to you")) {
+           $("#address-input").show();
+       } else {
+           $("#address-input").hide();
+           $("delivery-address").val("");
+       }
+      });
+      
+      $(".add-to-selection").on("click", function(e) {
+        e.preventDefault();
+        
+        
+        let button = $(this);
+        let id = button.attr("data-index");
+          
+        let delivery = $("#delivery-option").val();
+        let address = "";
+        if (delivery.toLowerCase().includes("delivery to you")) {
+            address = $("#delivery-address").val();
+            
+            if (!address.trim()){
+                alert("Please enter a delivery address.");
+                return;  // Prevent form submission if address is empty
+            }
+        }    
+        let car_slug = $("#car_slug").val();
+        let car_id = $("#car_id").val();
+        let car_make = $("#car_make").val();
+        let car_model = $("#car_model").val();
+        let car_year = $("#car_year").val();
+        let checkin = $("#checkin").val();
+        let checkout = $("#checkout").val();
+        let total_price = $("#total_price").val();
+        let check_in_time = $("#check_in_time").val();
+        let check_out_time = $("#check_out_time").val();
+        
+        let flight_number = $("#flight_number").val();
+        let prepaid_fuel = $("#prepaid_fuel").is(":checked") ? 'True' : 'False';
+        let second_driver = $("#additional_driver").is(":checked") ? 'True' : 'False';
+        let baby_seat = $("#seat-option").val();
+        let rack = $("#rack").val();
+
+        let csrf_token = $("input[name='csrfmiddlewaretoken']").val();
+        
+        let url = `/select/${car_slug}/booking-confirmation/?car_slug=${car_slug}&car_id=${car_id}&car_make=${car_make}&car_model=${car_model}&car_year=${car_year}&checkin=${checkin}&checkout=${checkout}&check_in_time=${check_in_time}&check_out_time=${check_out_time}&total_price=${total_price}&delivery=${delivery}&flight_number=${flight_number}&prepaid_fuel=${prepaid_fuel}&second_driver=${second_driver}&baby_seat=${baby_seat}&rack=${rack}&address=${encodeURIComponent(address)}`;
+        $.ajax({
+            url: '/add_to_selection/',  // Update URL if necessary
+            type: 'POST',
+            headers: {
+                "X-CSRFToken": csrf_token  // Include the CSRF token in headers
+            },
+            data: {
+                'id': id,
+                'car_slug': car_slug,  // carSlug
+                'car_id': car_id,      // carId
+                'car_make': car_make,  // carMake
+                'car_model': car_model, // carModel
+                'car_year': car_year,  // carYear
+                'checkin': checkin,    // checkin
+                'checkout': checkout,  // checkout
+                'total_price': total_price,  // totalPrice
+                'delivery': delivery, // delivery
+                'flight_number': flight_number,  // flightNumber
+                'prepaid_fuel': prepaid_fuel,  // prepaidFuel
+                'second_driver': second_driver, // secondDriver
+                'baby_seat': baby_seat,  // babySeat
+                'rack': rack, // rack
+                'address': address,  // deliveryAddress (if applicable)
+                'check_in_time': check_in_time, // checkInTime
+                'check_out_time': check_out_time // checkOutTime
+            },
+            dataType: 'json',
+            success: function(response) {
+                // Construct the URL for the next step (booking confirmation)
+                
+                window.location.href = url;  // This should trigger the redirection
+                console.log(response);  // Check the response from the server
+                
+                if (response.success) {
+                    console.log('Selection updated successfully.');
+                } else {
+                    console.error('Error adding to selection');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX request failed:', status, error);
+            }
+        }); 
+        
+    }); // Closing the $(".add-to-selection").on("click", function() {...})
+
+}); 
+
+    let carTotalPrice = parseFloat("{{car_total_price}}");
+    const prepaidFuelPrice = 150;
+    
+    function parsePrice(priceString) {
+        // Remove any non-numeric characters (like $ sign) and parse as a number
+        return parseFloat(priceString.replace(/[^0-9.-]+/g, ""));
+    }
+    
+    function updateTotalPrice(){
+        let totalPrice = carTotalPrice
+
+        const babySeatSelect = document.querySelector('select[name="baby_seat"]');
+        if(babySeatSelect && babySeatSelect.value){
+            const selectedBabySeat = babySeatSelect.options[babySeatSelect.selectedIndex];
+            const babySeatPrice = parsePrice(selectedBabySeat.textContent.split(' - $')[1]);
+            totalPrice += babySeatPrice;
+        }
+
+        const rackSelect = document.querySelector('select[name="rack"]');
+        if (rackSelect && rackSelect.value){
+        const selectedRack = rackSelect.options[rackSelect.selectedIndex];
+        const rackPrice = parsePrice(selectedRack.textContent.split(' - $')[1]);
+        totalPrice += rackPrice;
+        }
+
+        const prepaidFuelCheckbox = document.getElementById("prepaid_fuel");
+        if (prepaidFuelCheckbox && prepaidFuelCheckbox.checked){
+            totalPrice += prepaidFuelPrice
+        }
+
+        const deliverySelect =  document.querySelector('select[name="delivery"]');
+        if (deliverySelect && deliverySelect.value){
+            const selectedDelivery = deliverySelect.options[deliverySelect.selectedIndex];
+            const deliveryPrice = parsePrice(selectedDelivery.textContent.split(' - $')[1]);
+            totalPrice += deliveryPrice
+        }
+
+        document.getElementById("total-price-display").innerText = "$" + totalPrice.toFixed(2);
+        document.getElementById("total_price").value = totalPrice.toFixed(2);
+    }
+
+    document.querySelector('select[name="baby_seat"]').addEventListener("change", updateTotalPrice);
+    document.querySelector('select[name="rack"]').addEventListener("change", updateTotalPrice);
+    document.getElementById("prepaid_fuel").addEventListener("change", updateTotalPrice);
+    document.querySelector('select[name="delivery"]').addEventListener("change", updateTotalPrice);
+
+    window.onload = updateTotalPrice
+
+    // Get the modal, buttons, and close button
+    const modal = document.getElementById('galleryModal');
+    const openGalleryBtn = document.getElementById('openGalleryBtn');
+    const closeGalleryBtn = document.getElementById('closeGalleryBtn');
+
+    // When the user clicks the "View Gallery" button, open the modal
+    openGalleryBtn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    // When the user clicks on the "X" button, close the modal
+    closeGalleryBtn.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+
+<!-- CSS for Styling the Modal and Gallery -->
+<style>
+    /* Modal Style */
+    .gallery-modal {
+        display: none; /* Hidden by default */
+        position: fixed;
+        z-index: 1; /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.8); /* Black with opacity */
+    }
+
+    .gallery-modal-content {
+        position: relative;
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        width: 80%; /* Adjust width */
+        max-width: 1000px;
+        text-align: center;
+    }
+
+    .gallery-modal img {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        margin-bottom: 10px;
+    }
+
+    /* Close Button Style */
+    .close-btn {
+        position: absolute;
+        top: 0;
+        right: 10px;
+        font-size: 30px;
+        font-weight: bold;
+        color: #fff;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+    }
+
+    .close-btn:hover {
+        color: #ff0000;
+    }
+</style>
+
+{%endblock%}

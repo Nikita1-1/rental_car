@@ -1,0 +1,129 @@
+
+{% extends 'partials/dashboard_base.html' %}
+{% load static %}
+{% block content %}
+
+    <!-- Dashboard -->
+    <div id="dashboard">
+        <a href="#" class="utf_dashboard_nav_responsive"><i class="fa fa-reorder"></i> Dashboard Sidebar Menu</a>
+        {% include 'partials/dashboard_sidebar.html' %}
+        <div class="utf_dashboard_content">
+            
+           
+            <div class="row"> 
+                <div class="col-lg-6 col-md-12">
+                  <div class="utf_dashboard_list_box margin-top-0">
+                    <h4>Booking ID: {{ booking.booking_id }}</h4>
+                    <ul>
+                      <li class="utf_approved_booking_listing">
+                        <div class="utf_list_box_listing_item bookings">
+                          <div class="utf_list_box_listing_item_content">
+                            <div class="inner">
+                              <h3>{{booking.full_name|title}} <span class="utf_booking_listing_status">{{booking.payment_status|title}}</span></h3>
+                              <div class="utf_inner_booking_listing_list">
+                                <h5>Viehicle:</h5>
+                                <ul class="utf_booking_listing_list">
+                                  <li>{{booking.car.make}}</li>	
+                                  <li>{{booking.car.model}}</li>							  						  
+                                </ul>
+                              </div>
+                              <div>
+                              {% if booking.agreement_pdf %}
+                              <p>
+                                <a href="{{ booking.agreement_pdf.url }}" target="_blank">View Agreement PDF</a>
+                              </p>
+                              {% else %}
+                                <p>No agreement uploaded yet.</p>
+                              {% endif %}
+                              </div>
+                              <div class="utf_inner_booking_listing_list">
+                                <h5>Pick up Address:</h5>
+                                <ul class="utf_booking_listing_list">
+                                  <li><small>{{booking.car.location}}</small></li>						  						  
+                                </ul>
+                              </div>
+                              <div class="utf_inner_booking_listing_list">
+                                <h5>Company Email:</h5>
+                                <ul class="utf_booking_listing_list">
+                                  <li>{{booking.email}}</li>						  						  
+                                </ul>
+                              </div>
+                              <div class="utf_inner_booking_listing_list">
+                                <h5>Company Phone:</h5>
+                                <ul class="utf_booking_listing_list">
+                                  <li>{{booking.mobile}}</li>						  						  
+                                </ul>
+                              </div>
+                              <hr>
+                              <div class="utf_inner_booking_listing_list">
+                                <h5>Checkin Date:</h5>
+                                <ul class="utf_booking_listing_list">
+                                  <li class="highlighted">{{booking.check_in_date}}</li>
+                                </ul>
+                              </div>
+                              <div class="utf_inner_booking_listing_list">
+                                <h5>Checkout Date:</h5>
+                                <ul class="utf_booking_listing_list">
+                                  <li class="highlighted">{{booking.check_out_date}}</li>
+                                </ul>
+                              </div>
+                              <div class="utf_inner_booking_listing_list">
+                                <h5>Total Days:</h5>
+                                <ul class="utf_booking_listing_list">
+                                  <li class="highlighted">{{ booking.total_days }} Days</li>
+                                </ul>
+                              </div>
+                              
+                              <div class="utf_inner_booking_listing_list">
+                                <h5>Full Name:</h5>
+                                <ul class="utf_booking_listing_list">
+                                  <li class="highlighted">{{booking.full_name|title}}</li>
+                                </ul>
+                              </div>
+                              <div class="utf_inner_booking_listing_list">
+                                <h5>Email Address:</h5>
+                                <ul class="utf_booking_listing_list">
+                                  <li class="highlighted">{{booking.email}}</li>
+                                </ul>
+                              </div>
+                              <div class="utf_inner_booking_listing_list">
+                                <h5>Phone Number:</h5>
+                                <ul class="utf_booking_listing_list">
+                                  <li class="highlighted">{{booking.phone}}</li>
+                                </ul>
+                              </div>
+                              <hr>
+                              <div class="utf_inner_booking_listing_list">
+                                <h5>Price:</h5>
+                                <ul class="utf_booking_listing_list">
+                                  <li class="highlighted">${{booking.total_price|floatformat:2}}</li>
+                                </ul>
+                              </div>
+                              <hr>
+                              <div class="utf_inner_booking_listing_list">
+                                <h5>Date Booked:</h5>
+                                <ul class="utf_booking_listing_list">
+                                  <li class="highlighted">{{booking.check_in_date}}</li>
+                                </ul>
+                              </div>				  					  
+                            </div>
+                          </div>
+                        </div>
+                        <div class="buttons-to-right "> <a href="#" class="button gray reject"><i class="fas fa-receipt "></i> View Invoice</a> </div>
+                        {% if booking.payment_status != "paid" %}
+                        <form method="POST" action="{%url 'dashboard:cancel_booking' booking.booking_id %}" class="cancel-booking-form" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                          {% csrf_token %}
+                          <input type="hidden" name="booking_id" value="{{ booking.booking_id }}">
+                          <button type="submit" class="button gray reject">
+                            <i class="fas fa-ban"></i> Cancel Booking
+                          </button>
+                        </form>
+                        {% endif %}
+                      
+
+                    </ul>
+                  </div>		  
+                </div>
+        </div>
+    </div>
+{% endblock content %}

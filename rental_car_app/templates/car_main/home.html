@@ -1,0 +1,191 @@
+{%extends 'partials/base.html'%}
+
+{% load static %} 
+{%block content%}
+<div class="relative w-full min-h-screen flex items-center justify-center bg-black bg-opacity-70" style="font-family: 'chillax';">
+  <!-- Background image with dark overlay -->
+  <div class="absolute inset-2 bg-cover bg-center" style="background-image: url('/media/hero_img.jpg');">
+    <div class="absolute inset-0 bg-black bg-opacity-60"></div>
+  </div>
+
+  <!-- Content layer -->
+  <div class="relative z-10 w-full max-w-[1200px] px-6 py-20 flex flex-col items-center text-center">
+    <div class="title">
+        <h1 class="text-white mb-4">Drive Luxury.</h1>
+        <h1 class="text-white mb-10">Experience Aspen.</h1>
+    </div>
+    <!-- Booking form -->
+    <div class="frm w-[75%] bg-gradient-to-t from-black/90 to-zinc-800/60 backdrop-blur-sm rounded-2xl p-8">
+      <form method="POST" action="{% url 'booking:check_car_availability' %}" class="flex flex-col md:flex-row md:justify-evenly md:items-end gap-4">
+        {% csrf_token %}
+        <input type="hidden" name="car-id" value="{{ car.id }}">
+
+        <!-- Pick-up -->
+        <div class="flex flex-col space-y-2">
+          <label class="text-white text-[20px]">Pick-up date & Time</label>
+          <div class="flex gap-2">
+            <input type="date" name="checkin" class="bg-white text-black text-2xl rounded-lg p-2.5 w-[160px]">
+            <input type="time" name="time_in" class="bg-white text-black text-2xl rounded-lg p-2.5 w-[130px]">
+          </div>
+        </div>
+
+        <!-- Return -->
+        <div class="flex flex-col space-y-2">
+          <label class="text-white text-[20px]">Return date & Time</label>
+          <div class="flex gap-2">
+            <input type="date" name="checkout" class="bg-white text-black text-2xl rounded-lg p-2.5 w-[160px]">
+            <input type="time" name="time_out" class="bg-white text-black text-2xl rounded-lg p-2.5 w-[130px]">
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="flex items-end justify-center">
+          <button type="submit" class="btn text-white px-6 py-3">
+            Find a car
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+        
+<style>
+  .frm{
+    margin-left: -28px;
+  }
+  label{
+    display: flex;
+    justify-content: start;
+  }
+  h1{
+    color: white;
+    font-size: 60px;
+    margin-right: 30px;
+  }
+
+   .title{
+    display:flex;
+   }
+
+  .date{
+    size: 18px;
+  }
+
+  .btn{
+    padding: 15px 20px;
+    border: 2px solid white;
+    color: white;
+    border-radius: 20px;
+    transition: all 0.5s ease;
+    height: 52px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+  }
+  .btn:active{
+    background-color: black;
+    color: white;
+    border: 2px solid black;
+
+  }
+
+@media screen and (max-width: 450px){
+  h1{
+    font-size: 28px;
+    margin:0px 0px 5px 0px;
+  }
+
+  .frm{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    margin-left: 5px;
+    height: 100%;
+  }
+
+  .title{
+    flex-direction: column;
+  }
+
+  .mobile_dates{
+    display:flex;
+    flex-direction: column;
+    width: 100%;
+    height:100%;
+    padding:12px;
+    background:transparent;
+  }
+
+  .form{
+    align-items: start;
+    margin-top:-20px;
+    backdrop-filter: blur(2px);
+    height: 45%;
+  }
+
+  .mobile_dates_container{
+    display: flex;
+    flex-direction: column;
+    gap:2px;
+  }
+
+  .mobile_pickup{
+    width: 280px;
+  }
+
+  .mobile_return{
+    width:280px;
+  }
+
+  .btn{
+    margin-top:5px;
+  }
+}
+ 
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+  // Correct the method name to getElementById
+  const checkinInput = document.getElementById("checkin");
+  const checkoutInput = document.getElementById("checkout");
+
+  const today = new Date();
+
+  // Format today's date as YYYY-MM-DD
+  const formattedDate = today.toISOString().split("T")[0];
+  checkinInput.setAttribute("min", formattedDate);
+  
+  today.setDate(today.getDate() + 1); 
+  const nextDayFormatted = today.toISOString().split("T")[0];
+  checkoutInput.setAttribute("min", nextDayFormatted);
+});
+
+document.addeventlistener("DOMContentLoaded", function(){
+  const timeIn = document.getElementById("timeIn");
+  const timeOut = docuemnt.getElementById("timeOut");
+
+  function isTimeResctricted(value) {
+    const [hours, minutes] = value.split(":").map(Number);
+    const totalMinutes = hours * 60 + minutes;
+    const restictedStart = 23 * 60;
+    const restrictedEnd = 7 * 60;
+
+    return (totalMinutes >= restrictedStart || totalMinutes < restrictedEnd);
+  }
+
+  function validateTime(input){
+    const time = inpit.value;
+    if (isTimeRestricted(time)){
+      alert("Please select a time between 7:00 AM and 11:00 PM.");
+      inpit.value = "";
+    }
+  }
+
+  timeIn.addEventListener("change", () => validateTime(timeIn));
+  timeOut.addEventListener("change", () => validateTime(timeOut));
+})
+</script>
+        {%endblock content%}

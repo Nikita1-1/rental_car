@@ -1,0 +1,207 @@
+{%extends 'partials/base.html'%}
+{% load static %} 
+{%block content%}
+
+<div class="wrapper">
+  <div class="form">
+<form class="billing_form" id="billingForm" method="POST" action="{% url 'car_main:selected_car' %}">
+    {% csrf_token %}
+    <h1 style="color: white; position: absolute; top:20px; left: 42px; font-size: 24px;">Billing Information</h1>
+    <div class="row">
+      <div class="">
+      <label>First Name</label>
+      <input name="full_name" type="text" value="{{request.user.profile.full_name|title}}" placeholder="First Name">
+      </div>
+      <div class="">
+        <label>E-Mail</label>
+        <input name="email" type="text" value="{{request.user.email}}" placeholder="Email">
+      </div>
+      <div class="medium-icons">
+        <label>Phone</label>
+        <input name="phone" type="text" value="{{request.user.phone}}" placeholder="Phone">
+      </div>
+      <input type="hidden" name="car_slug" value="{{ selected_car.car_slug }}" id="car_slug">
+      <input type="hidden" name="car_id" value="{{ selected_car.car_id }}" id="car_id">
+      <input type="hidden" name="make" value="{{ selected_car.make }}" id="car_make">
+      <input type="hidden" name="model" value="{{ selected_car.model }}" id="car_model">
+      <input type="hidden" name="year" value="{{ selected_car.year }}" id="car_year">
+      <input type="hidden" name="checkin" value="{{ selected_car.checkin }}" id="checkin">
+      <input type="hidden" name="checkout" value="{{ selected_car.checkout }}" id="checkout">
+      <input type="hidden" name="total_price" value="{{ selected_car.total_price }}" id="total_price">
+      <input type="hidden" name="baby_seat" value="{{ baby_seat.name }}" id="baby_seat">
+      <input type="hidden" name="check_in_time" value="{{check_in_time}}" id="check_in_time">
+      <input type="hidden" name="check_out_time" value="{{check_out_time}}" id="check_out_time">
+
+    </div>
+    </form>
+    <button type="submit" class="button_to_checkout" onclick="document.getElementById('billingForm').submit();">Continue to checkout</button> 		
+  </div>
+  <div class="booking_info">
+    <h1 class="summary">Booking Summary</h1>
+    <ul class="summary-list">
+      <li>Viehicle: <span>{{car}}</span></li>
+      <li>Check-in: <span>{{selected_car.checkin}}</span></li>
+      <li>Check-out: <span>{{selected_car.checkout}}</span></li> 
+      <li>Pick-up Time: <span>{{selected_car.check_in_time}}</span></li>
+      <li>Drop-off Time: <span>{{selected_car.check_out_time}}</span></li>
+      <li>Total Cost: <span>${{selected_car.total_price}}</span></li>
+      <li>Delivery: 
+        <span>
+          {{ selected_car.delivery }}
+          {% if "delivery to you" in selected_car.delivery|lower and delivery_address %}
+  <br class="address"><span class='ad' style="color:white">Address:</span> {{ delivery_address }}
+{% endif %}
+      
+        </span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+
+
+<style>
+  .wrapper{
+    display: flex;
+    flex-direction: row;
+    gap: 80px;
+    justify-content: space-evenly;
+    width: 100%;
+    height: 100%;
+  }
+  .form{
+    display: flex;
+    width: auto;
+    height: auto;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  .billing_form{
+    width: 40%;
+    height: 40%;
+    padding: 60px;
+    background-color: none;
+    border: 2px solid white;
+    border-radius: 18px;
+    position: absolute;
+    top:140px;
+    left:60px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+
+  .button_to_checkout{
+    width: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    padding: 15px 20px;
+    border: 2px solid white;
+    color: white;
+    border-radius: 20px;
+    position: absolute;
+    top: 58%;
+    left:60px;
+    transition: all 0.5s ease;
+  }
+  .button_to_checkout:hover{
+    transition: all 0.5s ease;
+    text-decoration: underline;
+  }
+  
+  .button_to_checkout:active{
+    background-color: black;
+    color: white;
+    border: 2px solid black;
+
+  }
+
+  .booking_info{
+    display: flex;
+    position: absolute;
+    right: 120px;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: self-start;
+    width: 40%;
+    height: auto;
+    padding: 60px;
+    padding-bottom: 30px;
+    background-color: none;
+    border: 2px solid white;
+    border-radius: 18px;
+    position: absolute;
+    top:140px;
+    right:60px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+
+  .ad{
+    color: white;
+  }
+
+  .summary{
+    color: white;
+    font-size: 24px;
+    margin-bottom: 20px;
+    position: inherit;
+    top:20px;
+    left:40px;
+  }
+
+  .summary-list{
+    margin-left: -20px;
+  }
+
+  .car{
+    font-size: 20px;
+  }
+  .summary-list li{
+    color: white;
+    font-size: 20px;
+    margin-bottom: 5px;
+  }
+
+  .summary-list li span{
+    color: rgb(188, 186, 186);
+  }
+
+
+@media screen and (max-width: 460px){
+   
+ .wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .form {
+    flex: 1;
+    padding: 20px;
+  }
+  .billing_form{
+    top: 80px;
+    left:5px;
+    width:95%;
+    height: 45%;
+  }
+
+  .button_to_checkout{
+    width: 370px;
+    top: 2%;
+    left: 6px;
+  }
+
+  .booking_info{
+    top: 440px;
+    right:13px;
+    width: 95%;
+  }
+}
+</style>
+{%endblock%}

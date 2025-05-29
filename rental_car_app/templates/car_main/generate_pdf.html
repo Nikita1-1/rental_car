@@ -1,0 +1,29 @@
+<h2>Rental Agreement</h2>
+<p>Date: {{ created_at|date:"F j, Y, g:i a" }}</p>
+<p>Customer: {{ booking.full_name }}</p>
+<p>Email: {{ booking.email }}</p>
+<p>Phone: {{ booking.phone }}</p>
+<p>Car Model: {{ booking.car.model }}</p>
+<p>Booking ID: {{ booking.booking_id }}</p>
+<p>Rental Dates: {{ check_in_date }} to {{ check_out_date }}</p>
+<p>Pickup Location: {{ delivery }}</p>
+<p>Total Days: {{total_days}}</p>
+
+<h3>Agreement Text</h3>
+<p>... (full terms as you showed earlier) ...</p>
+
+<h3>Customer Initials</h3>
+<p>{{ initials }}</p>
+
+<h3>Acknowledgement {{acknowledgment}}</h3>
+
+<p>This agreement was acknowledged on {{ created_at|date:"F j, Y, g:i a" }} by {{ booking.full_name }}.</p>
+
+<h1> Please download this PDF with images here. This images are taken before your trip, indicating state of the car. Please return in same condition.</h1>
+
+{% if trip_images %}
+  <h3>Trip images</h3>
+  {% for image_url in trip_images %}
+    <img src="{{ image_url }}" width="500" style="margin-bottom: 25px;">
+  {% endfor %}
+{% endif %}

@@ -1,0 +1,16 @@
+{% load static %}
+
+<div class="utf_dashboard_navigation js-scrollbar">
+    <div class="utf_dashboard_navigation_inner_block">
+        <ul>
+            
+            <li class="{% if request.path == '' %}  active {% endif %}"><a href="{% url 'car_main:home' %}"><i class="bi bi-grid"></i> Book A Car</a></li>
+            <li class="{% if request.path == '/dashboard/' %}  active {% endif %}"><a href="{% url 'dashboard:dashboard' %}"><i class="bi bi-grid"></i> Dashboard</a></li>
+            <li class="{% if request.path == '/dashboard/bookings/'  %}  active {% endif %}"><a href="{% url 'dashboard:bookings' %}"><i class="bi bi-check"></i>All Bookings</a></li>
+            <li class="{% if request.path == '/dashboard/profile/'  %}  active {% endif %}"><a href="{% url 'dashboard:profile' %}"><i class="bi bi-person-fill"></i> My Profile</a></li>
+            <li class="{% if request.path == '/dashboard/change-password/'  %}  active {% endif %}"><a href="{% url 'dashboard:change_password' %}"><i class="bi bi-lock-fill"></i> Change Password</a></li>
+            <li><a href="{% url 'user_auths:logout' %}"><i class="bi bi-arrow-left"></i> Logout</a></li>
+
+        </ul>
+    </div>
+</div>

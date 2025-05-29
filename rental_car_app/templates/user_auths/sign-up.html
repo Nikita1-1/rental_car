@@ -1,0 +1,339 @@
+{%extends 'partials/base.html'%}
+
+{% load static %} 
+{%block content%}
+
+        <div class="fullwidth_block search_categorie_block main">
+            <div class="container">
+                <div class="row">
+                    <div class="mobile_sign_up col-md-12" style="width: 100%;
+                                            display: flex;
+                                            flex-direction: column;
+                                            justify-content: center;
+                                            align-items: center;margin-top: 120px;">
+                        <br>
+                        <h2 style="color: white; font-size: 24px;">Create an Account</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class="category_container_item_part card card=">
+                                <div class="utf_signin_form style_one">
+                                    <ul class="utf_tabs_nav">
+                                        <!-- <li class=""><a href="#tab1">Log In</a></li> -->
+                                    </ul>
+                                    <div class="tab_container alt">
+                                        
+        
+                                        <!-- register.html -->
+                                    <div class="register-card">
+                                    <form method="POST" enctype="multipart/form-data" class="register-form" action="{% url 'user_auths:sign-up' %}">
+                                        {% csrf_token %}
+
+                                        <div class="floating-field">
+                                        <input
+                                            type="text"
+                                            name="{{ form.full_name.html_name }}"
+                                            id="{{ form.full_name.id_for_label }}"
+                                            value="{{ form.full_name.value|default_if_none:'' }}"
+                                            placeholder=" "
+                                            required
+                                            
+                                        >
+                                        <label for="{{ form.full_name.id_for_label }}">
+                                            {{ form.full_name.label }}
+                                        </label>
+                                        {{ form.full_name.errors }}
+                                        </div>
+
+                                        <div class="floating-field">
+                                        <input
+                                            type="text"
+                                            name="{{ form.username.html_name }}"
+                                            id="{{ form.username.id_for_label }}"
+                                            value="{{ form.username.value|default_if_none:'' }}"
+                                            placeholder=" "
+                                            required
+                                        >
+                                        <label for="{{ form.username.id_for_label }}">
+                                            {{ form.username.label }}
+                                        </label>
+                                        {{ form.username.errors }}
+                                        </div>
+
+                                        <div class="floating-field">
+                                        <input
+                                            type="email"
+                                            name="{{ form.email.html_name }}"
+                                            id="{{ form.email.id_for_label }}"
+                                            value="{{ form.email.value|default_if_none:'' }}"
+                                            placeholder=" "
+                                            required
+                                        >
+                                        <label for="{{ form.email.id_for_label }}">
+                                            {{ form.email.label }}
+                                        </label>
+                                        {{ form.email.errors }}
+                                        </div>
+
+                                        <div class="floating-field">
+                                        <input
+                                            type="tel"
+                                            name="{{ form.phone.html_name }}"
+                                            id="{{ form.phone.id_for_label }}"
+                                            value="{{ form.phone.value|default_if_none:'' }}"
+                                            placeholder=" "
+                                            required
+                                        >
+                                        <label for="{{ form.phone.id_for_label }}">
+                                            {{ form.phone.label }}
+                                        </label>
+                                        {{ form.phone.errors }}
+                                        </div>
+
+                                        <div class="floating-field">
+                                        <input
+                                            type="password"
+                                            name="{{ form.password1.html_name }}"
+                                            id="{{ form.password1.id_for_label }}"
+                                            placeholder=" "
+                                            required
+                                        >
+                                        <label for="{{ form.password1.id_for_label }}">
+                                            {{ form.password1.label }}
+                                        </label>
+                                        {{ form.password1.errors }}
+                                        </div>
+
+                                        <div class="floating-field">
+                                        <input
+                                            type="password"
+                                            name="{{ form.password2.html_name }}"
+                                            id="{{ form.password2.id_for_label }}"
+                                            placeholder=" "
+                                            required
+                                        >
+                                        <label for="{{ form.password2.id_for_label }}">
+                                            {{ form.password2.label }}
+                                        </label>
+                                        {{ form.password2.errors }}
+                                        </div>
+
+                                        <div class="file-upload-button">
+                                        <label for="{{ form.drivers_license.id_for_label }}" class="button" aria-required="true">
+                                            <svg class="w-6 h-6" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" stroke-linejoin="round" stroke-linecap="round"></path>
+                                            </svg>
+                                            <span class="text">Upload License</span>
+                                        </label>
+                                         <input type="file"
+                                            name="{{ form.drivers_license.html_name }}"
+                                            id="{{ form.drivers_license.id_for_label }}"
+                                            required
+                                            style="margin-top: 10px;" />
+                                        
+                                        {{ form.drivers_license.errors }}
+                                        </div>
+
+                                        <input type="submit" name="register" id="register-submit" value="Register" />
+                                        
+                                    </form>
+                                </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                     
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const licenseInput = document.getElementById("id_drivers_license");
+                const successMsg = document.getElementById("upload-success");
+            
+                licenseInput.addEventListener("change", function () {
+                    if (licenseInput.files.length > 0) {
+                        successMsg.style.display = "block";
+                    } else {
+                        successMsg.style.display = "none";
+                    }
+                });
+            });
+            </script>
+
+            <style>
+                /* styles.css */
+
+/* Card container */
+.main{
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    height: 100%;
+}
+
+.card{
+    width: 620px;
+    margin:0px !important;
+}
+
+.register-card {
+  max-width: 400px;
+  margin: 1rem auto;
+  background: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  font-family: sans-serif;
+}
+
+.register-card h2 {
+  text-align: center;
+  margin-bottom: 1.6rem;
+  color: white;
+}
+
+/* Floating label fields */
+.floating-field {
+  position: relative;
+  margin-bottom: 1.9rem;
+}
+
+.floating-field input {
+  width: 100%;
+  padding: 0.75rem 0.25rem;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  background: transparent;
+  font-size: 18px;
+  outline: none;
+  transition: border-color 0.2s ease;
+  color: rgb(167, 165, 165);
+}
+
+
+
+.floating-field label {
+  position: absolute;
+  left: 0.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0px 8px 8px 0px;
+  color: #777;
+  font-size: 18px;
+  pointer-events: none;
+  transition:
+    transform 0.2s ease,
+    font-size 0.2s ease,
+    color 0.2s ease;
+}
+
+.floating-field input:focus + label,
+.floating-field input:not(:placeholder-shown) + label {
+  transform: translateY(-150%) scale(0.75);
+  transform-origin: top left;
+  color: rgb(219, 219, 219);
+}
+
+/* File upload field */
+/* Hide the default file input */
+.file-upload-button input[type="file"] {
+  display: none;
+}
+
+.file-upload-button .button {
+  width: 100%;
+  height: 60px;
+  margin-bottom: 20px;
+  border-radius: 20px;
+  border: 0.15em solid rgb(162, 63, 255);
+  color: rgb(162, 63, 255);
+  background-color: transparent;
+  transition: all 0.5s ease;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+}
+
+.file-upload-button .button .text {
+  display: none;
+  font-weight: 500;
+}
+
+.file-upload-button .button:hover .text {
+  display: block;
+  color:rgb(162, 63, 255);
+}
+
+.file-upload-button .button:hover svg {
+  display: none;
+}
+
+.file-upload-button .button:hover {
+  background-color: transparent;
+  color: #fff;
+}
+
+.file-upload-button .button svg {
+  width: 1.5em;
+  height: 1.5em;
+  margin-top: 2px;
+}
+
+/* Submit button */
+input[type="submit"] {
+    padding: 15px 20px;
+    background-color: transparent;
+    width : 100%;
+    border: 2px solid white;
+    color: white;
+    border-radius: 20px;
+    transition: all 0.5s ease;
+}
+
+input[type="submit"]:hover{
+    text-decoration: underline;
+}
+
+input[type="submit"]:active{
+    background-color: black;
+    color: white;
+    border: 2px solid black;
+}
+
+.register-form{
+    display: flex;
+    flex-direction: column;
+}
+
+
+@media screen and (max-width:460px){
+    .mobile_sign_up{
+        margin-top: 60px !important;
+    }
+
+    .register-form{
+        width:92%;
+    }
+
+    .register-card{
+        display:flex;
+        align-items:center;
+        justify-content: center;
+    }
+}
+            </style>
+        {% endblock content %}

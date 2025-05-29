@@ -1,0 +1,188 @@
+{%extends 'partials/base.html'%}
+{% load static %} 
+{%block content%}
+
+<video autoplay muted loop playsinline 
+class="absolute top-1/2 left-1/2 trnsform -translate-x-1/2 -translate-y-1/2 rounded-2xl w-[97%] h-[95%] object-cover z-[-100] ">
+<source src="/media/car_images/land.mp4" type="video/mp4" />
+Your browser does not support the video tag.
+</video>
+        <div class="fullwidth_block search_categorie_block">
+            <div class="container">
+                <div class="row">
+                    <div class="text col-md-12">
+                        <h3 class="headline_part centered margin-top-75 text-white margin-bottom-45">Sign In <span>Welcome back!</span> </h3>
+
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-12">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class="category_container_item_part card">
+                                <div class="utf_signin_form style_one">
+                                    <ul class="utf_tabs_nav">
+                                        <!-- <li class=""><a href="#tab1">Log In</a></li> -->
+                                    </ul>
+                                    <div class="tab_container alt">
+                                        
+        
+                                        <div class="login_container" id="tab2">
+                                            <form method="POST" class="login_form">
+                                                {% csrf_token%}
+                                                <div class="floating-field">
+                                                    <input type="text" id="email" placeholder=" " required autofocus="True">
+                                                    <label for="email">Email</label>
+                                                </div>
+                                                <div class="floating-field">
+                                                    <input type="text" id="password" placeholder=" " required autofocus="True">
+                                                    <label for="password">Password</label>
+                                                </div>
+                                                
+                                            <button type="submit" class="login_submit"> Login </button>
+                                            </form>
+                    
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+<style>
+    .login_submit{
+        padding: 15px 20px;
+        border: 2px solid white;
+        color: white;
+        border-radius: 20px;
+        transition: all 0.5s ease;
+    }
+    .login_submit:active{
+        background-color: black;
+        color: white;
+        border: 2px solid black;
+
+    }
+
+
+    .floating-field {
+        position: relative;
+        margin-bottom: 1.5rem;
+        width: 100%;
+    }
+    .floating-field input {
+        width: 100%;
+        padding: 0.75rem 0.25rem;
+        border: none;
+        border-bottom: 2px solid #ccc;
+        background: transparent;
+        font-size: 18px;
+        outline: none;
+        color: rgb(167, 165, 165);
+        transition: border-color 0.2s ease;
+    }
+
+    input{
+        padding: 10px;
+    }
+    .floating-field label {
+        position: absolute;
+        left: 0.25rem;
+        top: 50%;
+        transform: translateY(-50%);
+        padding: 0 0.25rem;
+        background: transparent;
+        color: #888;
+        font-size: 18px;
+        pointer-events: none;
+        z-index:1;
+        padding:0px 8px 8px 0px;
+        transition:
+        transform 0.2s ease-out,
+        font-size 0.2s ease-out,
+        color 0.2s ease-out;
+    }
+
+    .floating-field input:focus + label,
+    .floating-field input:not(:placeholder-shown) + label {
+        transform: translateY(-150%) scale(0.89);
+        transform-origin: top left;
+        color: rgb(219, 219, 219);
+        
+
+
+    }
+
+
+    .login_container{
+        width:400px;
+        height: 270px;
+
+    }
+    .login_form{
+        min-height: 10rem;
+        margin: auto;
+        display: flex;
+        padding: .5rem;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    
+
+    .login_username{
+        background: none;
+        padding: 10px;
+        --underline-thickness: 2px;
+    }
+
+    .login_username:focus{
+        transition: 0.25s ease-in;
+        
+    }
+    video{
+        filter:blur(100px);
+    }
+    
+    .row{
+        width: 500px;
+        display: flex;
+       
+        align-items: center;
+    }
+
+    @media screen and (max-width: 460px){
+        .tab_container{
+            display: flex;
+            justify-content: center;
+            align-self: center;
+        }
+
+        .login_container{
+            width: 75%;
+        }
+
+        .row{
+            width: 500px;
+        }
+
+        .contianer{
+            display: flex;
+            justify-content: center;
+        }
+
+        .text{
+            margin-left: 200px;
+            margin-top: -120px;
+        }
+    }
+    </style>
+    {% endblock content %}

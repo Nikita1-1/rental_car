@@ -1,0 +1,356 @@
+{%extends 'partials/base.html'%}
+{% load static %} 
+{%block content%}
+  
+
+<main class="wrapper w-full justify-center items-center flex">
+  <section class="container">
+    <div class="list">
+      {% if available_cars %}
+        {% for car in available_cars %}
+          <form id="form-{{ forloop.counter }}"
+                class="car-form {% if forloop.first %}active{% endif %}"
+                method="POST"
+                action="{% url 'car_main:car_detail' car.slug %}">
+            {% csrf_token %}
+            <article class="car-card {% if forloop.first %}active{% endif %}">
+              <div class="car-details opacity-[99999999] items-center justify-center flex flex-col text-center">
+                <span class="car_make color-white">
+                  {{ car.year }} {{ car.make }} {{ car.model }}
+                </span>
+                <span class="parent_features">
+                  {% for feature in car.features.all %}
+                    <p id="features">
+                      <img class="icon-img" src="{{ feature.image.url }}">
+                      {{ feature.name }}
+                    </p>
+                  {% endfor %}
+                </span>
+              </div>
+              <figure class="car-image"><input type="hidden" name="description" value="{{ car.description }}">
+                <input type="hidden" name="car_id" value="{{ car.id }}">
+                <input type="hidden" name="checkin" value="{{ checkin }}">
+                <input type="hidden" name="checkout" value="{{ checkout }}">
+                <input type="hidden" name="car_make" value="{{ car.make }}">
+                <input type="hidden" name="car_model" value="{{ car.model }}">
+                <input type="hidden" name="slug" value="{{ car.slug }}">
+                <input type="hidden" name="car_year" value="{{ car.year }}">
+                <input type="hidden" name="time_in" value="{{ time_in }}">
+                <input type="hidden" name="time_out" value="{{ time_out }}">
+                <input type="hidden" name="car_total_price" value="{{ car.total_price }}">
+
+                <img src="{{ car.image.url }}" alt="{{ car.make }} {{ car.model }}">
+              </figure>
+              <div class="daily_price">
+                <p name="price" class="price">
+                  <span class="day_rate">
+                    <h3>$ {{ car.price }}/<span>day</span></h3>
+                  </span>
+                  <span class="trip">
+                    ${{ car.total_price }}/<span>total</span>
+                  </span>
+                </p>
+                
+              </div>
+              <button class="book-btn" type="submit">Book</button>
+            </article>
+          </form>
+        {% endfor %}
+      {% else %}
+        <p class="text-white text-xl text-center">
+          No cars available at this time. Please select different dates.
+          <br>
+          <a href="{% url 'car_main:home' %}"
+             class="text-blue-400 underline color-white">
+            Book A Car
+          </a>
+        </p>
+      {% endif %}
+    </div>
+  </section>
+</main>
+
+  
+  <style>
+
+
+    body {
+  margin: 0;
+  height: 100vh;
+  overflow: hidden; /* body stays still */
+  scroll-behavior: smooth;
+}
+
+.wrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden; /* Keep horizontal hidden */
+}
+
+.container {
+  width: 100%;
+  max-width: 1440px;
+  height: 85vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  height: 83%;
+  padding: 20px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+
+  /* Hide scrollbars */
+  scrollbar-width: none;          /* Firefox */
+  -ms-overflow-style: none;       /* IE/Edge */
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: y mandatory;
+}
+
+.list::-webkit-scrollbar {
+  display: none;
+}
+
+form {
+  scroll-snap-align: start;
+  animation: slide-fade-in 0.5s ease both;
+  scroll-snap-align: start;
+  animation: slide-fade-in 0.5s ease-out both;
+}
+
+@keyframes slide-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  form {
+    animation: slide-fade-in 0.5s ease both;
+  }
+}
+.list::-webkit-scrollbar {
+  display: none;              
+}
+
+form {
+  background-color: none;
+  scroll-snap-align: start;
+  width: 400px;
+  color: white;
+  height: 500px;
+  border-radius: 20px;
+  border: 1.5px solid white;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-evenly;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+.car_make{
+  margin-bottom: 30px;
+  font-size: 24px;
+}
+
+.car_details{
+  height: 40px;
+}
+
+.daily_price{
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-top:15px;
+  margin-bottom: 40px;
+  width: 100%
+}
+
+h3{
+  color:white;
+}
+
+.trip{
+  color:rgb(95, 95, 95)
+}
+.parent_features {
+  border: 1px solid white;
+  border-radius: 25px;
+  padding: 10px 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center; /* horizontal center */
+  justify-content: center; /* vertical center */
+  text-align: center;
+  gap: 20px;
+  margin-bottom: 30px;
+  background-color: transparent;
+}
+
+#features{
+  display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    align-items: center;
+}
+
+.features-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
+  font-size: 14px;
+}
+
+.icon-img {
+  width: 25px;
+  height: 25px;
+  object-fit: contain;
+}
+
+.book-btn {
+    width: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    padding: 15px 20px;
+    border: 2px solid white;
+    color: white;
+    border-radius: 20px;
+    margin-left:55px;
+    margin-top:20px;
+    position: relative;
+    transition: all 0.5s ease;
+  }
+  .book-btn:hover{
+    transition: all 0.5s ease;
+    text-decoration: underline;
+  }
+  
+  .book-btn:active{
+    background-color: black;
+    color: white;
+    border: 2px solid black;
+
+  }
+
+
+  @media screen and (max-width:460px){
+
+    .wrapper{
+      overflow-y: hidden;
+    }
+    .container{
+      height:72vh;
+    }
+    .book-btn {
+    width: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    padding: 15px 20px;
+    border: 2px solid white;
+    color: white;
+    border-radius: 20px;
+    margin-left: -2px;
+    margin-top: 20px;
+    position: relative;
+    transition: all 0.5s ease;
+    }
+
+    .list {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    height: 83%;
+    padding: 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: y mandatory;
+    }
+
+    form {
+    background-color: none;
+    scroll-snap-align: start;
+    width: 90% !important;
+    color: white;
+    height: 500px;
+    border-radius: 20px;
+    border: 1.5px solid white;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+    flex-direction: column;
+    justify-content: space-evenly;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+  const forms = document.querySelectorAll(".car-form");
+  const carouselList = document.querySelector(".carousel-list");
+  const nextBtn = document.getElementById("next");
+  const prevBtn = document.getElementById("prev");
+
+  let currentIndex = 0;
+
+  function updateCarousel() {
+    const formWidth = forms[0].getBoundingClientRect().width;
+    const offset = -currentIndex * formWidth;
+
+    carouselList.style.transform = `translateX(${offset}px)`;
+
+    forms.forEach((form, i) => {
+      const card = form.querySelector(".car-card");
+
+      if (i === currentIndex) {
+        card.classList.add("active");
+      } else {
+        card.classList.remove("active");
+      }
+    });
+  }
+
+  nextBtn.addEventListener("click", () => {
+    currentIndex = (currentIndex + 1) % forms.length;
+    updateCarousel();
+  });
+
+  prevBtn.addEventListener("click", () => {
+    currentIndex = (currentIndex - 1 + forms.length) % forms.length;
+    updateCarousel();
+  });
+
+  updateCarousel();
+});
+
+</script>
+
+  
+  
+{%endblock%}

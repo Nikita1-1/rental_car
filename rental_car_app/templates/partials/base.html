@@ -1,0 +1,330 @@
+{%load static%}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+ 
+  <title>Car Rental</title>
+  <link rel="shortcut icon" href="images/favicon.png">
+  <link rel="stylesheet" href="{% static 'css/stylesheet.css' %}">
+  <link rel="stylesheet" href="{% static 'css/mmenu.css' %}">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" id="colors">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon-ligatures@2.5.0/fonts/remixicon.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@2.2.0/fonts/remixicon.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <script src="https://unpkg.com/sweetalert2@7.8.2/dist/sweetalert2.all.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script src="https://smtpjs.com/v3/smtp.js"></script>  
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <!-- You need this for the icons to render -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css?family=Nunito:300,400,600,700,800&display=swap&subset=latin-ext,vietnamese" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,500,600,700,800" rel="stylesheet" type="text/css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://api.fontshare.com/v2/css?f[]=chillax@300,400,500,600&display=swap" rel="stylesheet">
+
+</head>
+<body class="relative min-h-screen bg-black text-white" style="font-family: 'chillax', sans-serif;">
+  
+  <!-- Background Video Container -->
+
+  <span id='classMenu'class="box absolute top-[30%] left-[38%] transform -translate-x-1/2 -translate-y-1/2">
+      <div class="flex flex-col justify-center items-center space-y-4 font-chillax z-[9999] w-full h-full">
+          <a href="{% url 'dashboard:dashboard'%}" class="hover:underline">Booking</a>
+          <a href="{% url 'faq' %}" class="hover:underline">FAQ</a>
+          <a href="{% url 'contact'%}" class="hover:underline">Contact</a>
+        </div>
+  </span>
+
+  <div class="relative w-full h-screen overflow-hidden">
+    <nav class=" mobile_nav absolute top-10 left-0 w-full flex justify-between items-center px-8 py-6 text-md z-[50]">
+  
+      <!-- Centered navigation links -->
+      <div class="flex items-center">
+        <button class="fancy-burger">
+            <span class="rectangle rectangle--top rectangle--small"></span>
+            <span class="rectangle rectangle--middle"></span>
+            <span class="rectangle rectangle--bottom rectangle--small"></span>
+          </button>
+          
+      </div>
+      <div class="flex items-center space-x-4 font-chillax">
+        {% if user.is_authenticated %}
+        <div class="in">
+          <a href="{% url 'user_auths:logout'%}" class=" log-out hover:underline"> Log Out</a>
+          <a href="{% url 'dashboard:dashboard'%}" class="booking hover:underline"> Booking</a>
+        </div>
+          {% else %}
+        <div class="out">
+          <a href="{% url 'user_auths:sign-in'%}" class="sign-in hover:underline"> Sign in</a>
+          <a href="{% url 'user_auths:sign-up'%}" class="sign-up hover:underline"> Sign Up</a>
+        </div> 
+        {% endif %}
+      </div>
+    </nav>
+      <!-- Slide-down Menu -->
+      
+      
+      
+      <!-- Content Block, Centered on Video -->
+      <div class="content relative z-10 flex items-center justify-center h-full">
+        {% block content %}
+        {% endblock content %}
+      </div>
+      <footer class="absolute bottom-0 w-full flex justify-between items-center px-6 py-4 text-md bg-black/50 font-chillax text-white z-10">
+        <span style="color:rgb(157, 156, 156)"><a href="{% url 'legal' %}" target="_blank">Legal</a></span>
+        <span style="color:rgb(157, 156, 156)"><span style="font-size: 24px;">&reg</span> All Rights Are Reserved</span>
+        <span></span>
+      </footer>
+    </div>
+
+    {% for message in messages %}
+        <script>
+            Swal.fire({
+                icon:"{{message.tags}}",
+                title:"{{message}}",
+                text:"{{message.tags}}",
+                time:1800
+            })
+            
+        </script>
+    {% endfor %}
+    <!-- Scripts -->
+
+    <script src="{% static 'scripts/custom.js' %}"></script>
+    <script src="{%static 'scripts/jquery-3.4.1.min.js' %}"></script>
+    <script src="scripts/chosen.min.js"></script>
+    <script src="scripts/slick.min.js"></script>
+    <script src="scripts/rangeslider.min.js"></script>
+    <script src="scripts/magnific-popup.min.js"></script>
+    <script src="scripts/jquery-ui.min.js"></script>
+    <script src="scripts/bootstrap-select.min.js"></script>
+    <script src="scripts/mmenu.js"></script>
+    <script src="scripts/tooltips.min.js"></script>
+    <script src="scripts/color_switcher.js"></script>
+    <script src="scripts/jquery_custom.js"></script>
+    <script src="scripts/typed.js"></script>
+
+    <script>
+        function initAutocomplete() {
+            var input = document.getElementById('autocomplete-input');
+            var autocomplete = new google.maps.places.Autocomplete(input);
+
+            autocomplete.addListener('place_changed', function() {
+                var place = autocomplete.getPlace();
+                if (!place.geometry) {
+                    window.alert("No details available for input: '" + place.name + "'");
+                    return;
+                }
+            });
+
+            if ($('.main-search-input-item')[0]) {
+                setTimeout(function() {
+                    $(".pac-container").prependTo("#autocomplete-container");
+                }, 300);
+            }
+        }
+        const btn = document.querySelector(".fancy-burger");
+        const menu = document.querySelector("#classMenu");
+        
+
+        btn.addEventListener("click", () => {
+        btn.querySelectorAll("span").forEach((span) => span.classList.toggle("open"));
+        menu.classList.toggle("open");
+        });
+
+    </script>
+    <!-- Date Range Picker - docs: http://www.daterangepicker.com/ -->
+    <script src="scripts/moment.min.js"></script>
+    <script src="scripts/daterangepicker.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+
+    <style>
+      .fade-in-start{
+        opacity:0;
+        transition: opacity 1.5s ease-in;
+      }
+
+      .fade-in-end{
+        opacity: 1;
+      }
+
+
+        .in{
+            margin-right: 45px;
+            margin-top: 25px;
+            
+        }
+
+        .out{
+             margin-right: 45px;
+            margin-top: 25px;
+        }
+        .booking{
+            border: 2px solid white;
+            border-radius: 20px;
+            height: 100px;
+            padding: 15px 20px;
+            transition: all 0.5s ease;
+            size:18px;
+        
+        }
+        .booking:active{
+            background-color: black;
+            color: white;
+            border: 2px solid black;
+        }
+
+        .log-out{
+            margin-right: 25px;
+            size: 18px;
+        }
+
+    .book{
+        margin-left: 40px;
+        margin-top:20px;
+        size: 18px;
+    }
+    body {
+      padding: 2rem;
+    }
+
+:root {
+  --button-width: 40px;
+  --button-height: calc(var(--button-width) * .8);
+  --rectangle-height: calc(var(--button-width) * .1);
+  --rectangle-radius: calc(var(--button-width) * .04);
+  --translate: calc(var(--button-width) * .17);
+  --transition: 0.65s;
+}
+
+.fancy-burger {
+  position: relative;
+  width: var(--button-width);
+  height: var(--button-height);
+  border: 0;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+  margin-left:40px;
+  margin-top: 30px;;
+}
+.rectangle {
+  position: absolute;
+  height: var(--rectangle-height);
+  background: white;
+  border-radius: var(--rectangle-radius);
+  transition: transform var(--transition);
+}
+.rectangle--small {
+  width: calc(var(--button-width) / 2);
+}
+.rectangle--top {
+  top: 0;
+  left: 0;
+  transform-origin: top left;
+}
+.rectangle--top.open {
+  transform: translateX(var(--translate)) rotate(45deg);
+}
+.rectangle--middle {
+  top: 50%;
+  left: 0;
+  width: var(--button-width);
+  transform: translatey(-50%);
+}
+.rectangle--middle.open {
+  transform: translatey(-50%) rotate(-45deg);
+}
+.rectangle--bottom {
+  bottom: 0;
+  right: 0;
+  transform-origin: bottom right;
+}
+.rectangle--bottom.open {
+  transform: translateX(calc(-1 * var(--translate))) rotate(45deg);
+}
+.box {
+  width: 400px;
+  height: 280px;
+  border-radius: 33px;
+  background: #5672fc;
+  opacity: 0;
+  transform: scale(0);
+  transform-origin: top left;
+  transition-property: opacity, transform;
+  transition-duration: var(--transition);
+}
+.box.open {
+  opacity: 100000;
+  transform: scale(1);
+  pointer-events: auto;
+  visibility: visible;
+  z-index: 1000;
+}
+
+.sign-up{
+  margin-left: 25px;
+  border: 2px solid white;
+  border-radius: 24px;
+  padding: 15px 20px;
+}
+
+@media  screen and (max-width: 460px) {
+  .content{
+    overflow-y: auto;
+    margin-top: 100px;
+    height: 81vh;
+    scrollbar-width: none;
+  }
+  
+
+  .mobile_nav{
+    padding-left: 0rem;
+    padding-right: 0rem;
+    padding-top: 0px;
+    margin-top: -20px;
+  }
+  .sign-in{
+    display: none;
+  }
+
+  .sign-up{
+    margin-right:-21px;
+  }
+
+  .fancy-burger{
+    margin-left:15px;
+  }
+
+  #classMenu{
+    left: 10px;
+  }
+
+  .log-out{
+    display:none;
+  }
+  .booking{
+    margin-right:-30px;
+  }
+}
+
+    </style>
+</body>
+
+</html>

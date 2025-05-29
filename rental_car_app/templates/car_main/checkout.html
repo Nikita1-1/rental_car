@@ -1,0 +1,471 @@
+
+{% extends 'partials/base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- Rental Agreement Popup Modal -->
+<div id="signature-form" class="signature-form fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center hidden">
+  <div class="bg-white w-[450px] max-w-2xl p-6 rounded-lg shadow-lg">
+    
+    <!-- Scrollable Agreement Text -->
+    <div class="h-[250px]  overflow-y-auto p-3 mb-4 bg-gray-50 text-gray-800 rounded border">
+      <h2 class="text-lg font-semibold mb-2">Please Read the Following</h2>
+      <p class="mb-2">
+        This Rental Car Agreement (“Agreement”) is made by and between Aspen Car Care (“ACC”) and
+        {{user.full_name}} (“Customer” or “I”) as of the day of {{checkin}} and ending {{checkout}}.
+        <!-- agreement content continues... -->
+      </p>
+      <p class="mb-2">Donec ullamcorper nulla non metus auctor fringilla. Cras mattis consectetur purus sit amet fermentum.</p>
+    </div>
+
+    {% if not booking.agreement_uploaded %}
+    <!-- Acknowledgment Form -->
+    <form id="acknowledgment-form" method="POST" action="{% url 'car_main:generate_booking_pdf' booking.booking_id %}">
+      {% csrf_token %}
+
+      <div class="flex items-center mb-3">
+        <input id="ack-checkbox" type="checkbox" name="acknowledged"
+               class="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" required>
+        <label for="ack-checkbox" class="ml-2 text-gray-700">
+          I have read and agree to the above terms.
+        </label>
+      </div>
+
+      <div class="mb-3">
+        <label for="initials" class="block text-gray-700 mb-1">Please enter your initials:</label>
+        <input id="initials" name="initials" type="text" maxlength="3" required
+               class="w-32 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+               placeholder="e.g. J.D.">
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <button type="button" id="close-popup"
+                class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
+          Close
+        </button>
+        <button id="continue-btn"
+                type="submit"
+                class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+          Continue
+        </button>
+      </div>
+    </form>
+    {% endif %}
+  </div>
+</div>
+
+
+
+<div class="main-content">
+    <!-- Left side -->
+    <div class="left-panel">
+      <div class="section">
+        <input class="booking_id" type="hidden" value="{{booking.booking_id}}">
+        <h1 class="head">Billing Information</h1>
+        <label>Full Name</label>
+        <input class="info" name="full_name" type="text" value="{{booking.full_name}}">
+    
+        <label>Email</label>
+        <input class="info" name="email" type="text" value="{{booking.email}}">
+    
+        <label>Phone</label>
+        <input class="info" name="phone" type="text" value="{{booking.phone}}">
+      </div>
+      <button id="popup-button" type="button" onClick="">Rental Agreement</button>
+      <button id="checkout-button" type="button" {% if not booking.agreement_uploaded%} disabled {% endif %} data-agreement="{{ booking.agreement_uploaded|yesno:'true,false' }}">Pay with Stripe</button>
+      
+    </div>
+    <div class="right-panel">
+      <div class="summary">
+        <h1 class="head">Booking Summary</h1>
+        
+        <div class="summary-card">
+          <h2 style="color: white;">Car: {{booking.car}}</h2>
+          <h2 style="color:white">Total Days: {{ booking.total_days }} Days</h2>
+        </div>
+        <ul>
+          <li>Check-in: {{ booking.check_in_date }} at {{booking.check_in_time}}</li>
+          <li>Check-out: {{ booking.check_out_date }} at {{booking.check_out_time}}</li>
+          <li>Prepaid Fuel: {% if booking_features.prepaid_fuel %}Yes{% else %}No{% endif %}</li>
+          <li>Baby Seat: {{ booking_features.baby_seat.name|default_if_none:"N/A" }}</li>
+          <li>Additional Driver: {% if booking_features.additional_driver %}Yes{% else %}No{% endif %}</li>
+          <li>Flight Number: {{ booking_features.flight_number|default:"N/A" }}</li>
+          <li>Delivery Option: {{ booking_features.delivery|default:"N/A" }}</li>
+          <li>Rack: {{ booking_features.racks.name|default:"N/A" }}</li>
+          <li>Deposit: ${{ deposit }}
+          <li>V.A.T: $0.00</li>
+          {% if booking.saved != 0.00 %}
+          <li>Discount: -${{booking.saved}}</li>
+          {% endif %}
+        </ul>
+        
+        <div class="total-cost">Total Cost: ${{booking.total_price}}</div>
+        <form method="POST" id="ApplyDiscount">
+          {% csrf_token %}
+          <input name="code" placeholder="Have a coupon? Enter here" type="text">
+        </form>
+      <div style="display:flex; justify-content:start; align-items:center; gap: 10px;">
+        <button type="submit" id="add-discount" onclick="document.getElementById('ApplyDiscount').submit()" value="Apply">Apply</button> 
+        <a href="{% url 'car_main:add_trip_to_session' booking.car.slug %}?checkin={{ booking.check_in_date }}&checkout={{ booking.check_out_date }}&car_total_price={{ booking.total_price }}&check_in_time={{booking.check_in_time}}&check_out_time={{booking.check_out_time}}&total_days={{booking.total_days}}" id="add-booking"> Add Trip</a>
+                                              
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+function updateBookingStatus(){
+  var bookingId = $('.booking_id').val();
+  if (!bookingId) return;
+  
+        $.ajax({
+                url: `/update_booking_status/${bookingId}/`, // use backticks for template string
+                type: "GET",
+                success: function(data){
+                        console.log(data.status)
+                },
+        })
+}
+setInterval(updateBooknigStatus, 600000); 
+
+  </script>
+
+<style>
+
+
+  body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.head{
+  color: white;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.main-content {
+  display: flex;
+  padding: 1em;
+  gap: 15em;
+}
+
+.left-panel,
+.right-panel {
+  flex: 1 1 45%;
+  background: none;
+  padding: 1em;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  min-width: 300px;
+  width: 450px;
+  margin-top: 7em;
+}
+
+.right-panel {
+  width: 750px;
+}
+
+.left-panel {
+  height: 500px;
+  border: none;
+}
+
+input[type="text"] {
+  box-sizing: border-box;
+  width: 100%;
+  height: calc(4em + 1px);
+  padding: 1em;
+  border: 1px solid #ccc;
+  background: none;
+  resize: none;
+  outline: none;
+}
+
+input[type="text"][required]:focus {
+  border-color: rgb(165, 163, 163);
+}
+input[type="text"][required]:focus + label[placeholder]:before {
+  color: #d6d4d4;
+}
+input[type="text"][required]:focus + label[placeholder]:before,
+input[type="text"][required]:valid + label[placeholder]:before {
+  transition-duration: .2s;
+  transform: translate(0, -1.5em) scale(0.9, 0.9);
+}
+
+input[type="text"][required]:invalid + label[placeholder][alt]:before {
+  content: attr(alt);
+}
+
+input[type="text"][required] + label[placeholder] {
+  display: block;
+  pointer-events: none;
+  line-height: 1em;
+  margin-top: calc(-3em - 2px);
+  margin-bottom: calc((3em - 1em) + 2px);
+}
+
+input[type="text"][required] + label[placeholder]:before {
+  content: attr(placeholder);
+  display: inline-block;
+  margin: 0 calc(1em + 2px);
+  padding: 0 2px;
+  color: #898989;
+  white-space: nowrap;
+  transition: 0.3s ease-in-out;
+  background-image: linear-gradient(to bottom, #fff, #fff);
+  background-size: 100% 5px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.summary ul {
+  list-style: none;
+  padding: 0;
+}
+
+.summary ul li {
+  padding: 0.3em 0;
+}
+
+#checkout-button {
+  margin-top: 1em;
+  width: 100%;
+  padding: 0.8em;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.notification {
+  padding: 1em;
+  margin-bottom: 1em;
+  border-left: 5px solid #ffecb5;
+}
+
+.total-cost{
+  font-weight: bold;
+  font-size: 20px;
+  margin:5px 0px 8px 0px;
+  color: #ccc;
+
+}
+
+#add-discount {
+    border: 2px solid white;
+    border-radius: 20px;
+    height: 45px;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.5s ease;
+    size:18px; 
+         }
+#add-discount:active{
+    background-color: black;
+    color: white;
+    border: 2px solid black;
+    cursor: pointer;
+        }
+
+
+#add-booking {
+    border: 2px solid white;
+    border-radius: 20px;
+    height: 45px;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.5s ease;
+    size:18px; 
+         }
+#add-booking:active{
+    background-color: black;
+    color: white;
+    border: 2px solid black;
+    cursor: pointer;
+        }
+
+#popup-button {
+  width: 100%;
+  border: 2px solid rgb(88, 53, 121);
+  border-radius: 10px;
+  height: 60px;
+  color: rgba(152, 63,255);
+  background-color: none;
+  transition: 0.2s ease;
+}
+
+#popup-button:hover {
+  background-color: rgb(138, 19, 249);
+  cursor: pointer;
+  color: white;
+  border:1px solid;
+}
+
+.signature-form {
+    backdrop-filter: blur(3px);
+}
+
+
+@media screen and (max-width:460px){
+  
+  .left-panel, .right-panel {
+    flex: 1 1 45%;
+    position: absolute;
+    background: none;
+    padding: 1em;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    min-width: 300px;
+    width: 380px;
+    margin-top: 0em;
+    top: 0px;
+    left: 0;
+  }
+  .right-panel {
+    width: 380px !important;
+    top: 510px !important;
+    left: 0px !important;
+    margin-top:15px;
+}
+}
+</style>
+
+<script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://js.stripe.com/v3/"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const popupButton = document.getElementById("popup-button");
+    const signatureForm = document.querySelector(".signature-form");
+    const closePopup = document.getElementById("close-popup");
+    const acknowledgmentForm = document.getElementById("acknowledgment-form");
+    const payBtn = document.getElementById("checkout-button");
+
+    popupButton.addEventListener("click", function () {
+      signatureForm.classList.remove("hidden");
+    });
+
+    closePopup.addEventListener("click", function () {
+      signatureForm.classList.add("hidden");
+    });
+
+   window.addEventListener('click', function (event) {
+    const popup = document.getElementById('signature-form');
+    if (event.target === popup) {
+      popup.classList.add('hidden');
+    }
+  });
+    payBtn.addEventListener("click", function () {
+    if (payBtn.dataset.agreement !== "true") {
+      alert("You must sign the rental agreement before proceeding to payment.");
+      signatureForm.classList.remove("hidden");
+    } else {
+      // Proceed with Stripe logic here
+      // You can call your Stripe checkout handler or submit a form
+      console.log("Proceeding to Stripe...");
+    }
+  });
+
+
+    // AJAX form submission
+    acknowledgmentForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const csrfToken = document.querySelector("input[name='csrfmiddlewaretoken']").value;
+      const initials = document.getElementById("initials").value.trim();
+      const acknowledged = document.getElementById("ack-checkbox").checked;
+
+      if (!acknowledged) {
+        alert("Please confirm that you have read the terms.");
+        return;
+      }
+
+      if (!initials) {
+        alert("Please enter your initials.");
+        return;
+      }
+
+      fetch(acknowledgmentForm.action, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "X-CSRFToken": csrfToken,
+        },
+        body: new URLSearchParams({
+          initials: initials,
+          acknowledged: acknowledged,
+        }),
+      })
+      .then(response => response.json())
+      .then((data) => {
+        if (data.success){
+          alert("PDF denerated successfully!");
+          signatureForm.classList.add("hidden");
+          closePopup.classList.remove('hidden')
+
+
+          const payBtn = document.getElementById("checkout-button");
+          payBtn.disabled = false;
+          payBtn.dataset.agreement = "true";
+          payBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
+          payBtn.classList.add("bg-blue-600", "hover:bg-blue-700");
+        } else{
+          alert("An expected response occured.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert("There was an error.");
+      });
+    });
+  });
+</script>
+
+
+<script>
+var stripe = Stripe('{{stripe_public_key}}');
+var checkoutButton = document.getElementById('checkout-button');
+
+checkoutButton.addEventListener('click', function () {
+  var email = "{{booking.email}}";
+  var fullName = "{{booking.full_name}}";
+  var phone = "{{booking.phone}}";
+  checkoutButton.innerHTML = "Processing...";
+
+  fetch("/api/create_checkout_session/{{booking.booking_id}}/", {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      email: email,
+      full_name: fullName,
+      phone: phone,
+    })
+  })
+  .then(response => response.json())
+  .then(session =>{
+    if (session){
+      return stripe.redirectToCheckout({ sessionId: session.sessionId });
+    } else {
+      throw new Error (session.error || "Session ID is missing")
+    }
+  }).catch(function (error) {
+    alert("Error: " + error.message);
+  });
+});
+
+</script>
+
+  
+{% endblock content %}
