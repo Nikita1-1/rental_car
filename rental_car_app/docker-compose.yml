@@ -1,29 +1,5 @@
 
 services:
-  db:
-    image: mysql:8.0
-    container_name: aspen_rental_car_db
-    restart: always
-
-    command: --default-authentication-plugin=mysql_native_password
-
-    environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-    ports:
-      - "3307:3306"
-    volumes:
-      - db_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysql", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}", "-e", "SELECT 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - rental_car_app_django_network
-
   redis:
     image: redis:7
     container_name: rental_car_redis
@@ -45,27 +21,10 @@ services:
       - "9345:8000"
     networks:
       - rental_car_app_django_network
-    depends_on:
-      db:
-        condition: service_healthy
     env_file:
       - .env 
     environment:
       - DATABASE_HOST=db
-
-  nginx:
-    image: nginx:latest
-    container_name: rental_car_nginx
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d
-      - static_volume:/app/staticfiles
-      - media_volume:/app/mediafiles
-    depends_on:
-      - web
-    networks:
-      - rental_car_app_django_network
 
   
   celery:
@@ -76,7 +35,6 @@ services:
     - .:/app
     depends_on:
     - redis
-    - db
     - web
     networks:
     - rental_car_app_django_network
@@ -91,7 +49,6 @@ services:
       - .:/app
     depends_on:
       - redis
-      - db
     networks:
       - rental_car_app_django_network
     env_file:
