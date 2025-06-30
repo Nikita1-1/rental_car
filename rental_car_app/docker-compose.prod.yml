@@ -1,22 +1,4 @@
-
 services:
-  db:
-    image: mysql:8.0
-    container_name: rental_car_mysql
-    environment:
-      MYSQL_DATABASE: RentalCar
-      MYSQL_USER: Superuser
-      MYSQL_PASSWORD: Superuser2010
-      MYSQL_ROOT_PASSWORD: rootpassword
-    volumes:
-      - db_data:/var/lib/mysql
-    networks:
-      - rental_car_app_django_network
-    ports:
-      - "3307:3306"
-    command: --default-authentication-plugin=mysql_native_password
-
-
   redis:
     image: redis:7
     container_name: rental_car_redis
@@ -31,65 +13,57 @@ services:
     build: .
     command: >
       sh -c "python manage.py migrate &&
-             python manage.py runserver 0.0.0.0:8000"
-    container_name: rental_car_app_web
+             python manage.py collectstatic --noinput &&
+             gunicorn rental_car.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 120"
+    container_name: rental_car_app_web_prod
+    restart: unless-stopped
     volumes:
-      - .:/app
       - static_volume:/app/staticfiles
       - media_volume:/app/mediafiles
     ports:
-      - "9345:8000"
+      - "8000:8000"
     networks:
       - rental_car_app_django_network
     env_file:
-      - .env 
-    environment:
-      - DATABASE_HOST=db
+      - .env.prod
     depends_on:
-      - db
       - redis
 
   
   celery:
     build: .
-    container_name: rental_car_celery
-    command: celery -A rental_car worker --loglevel=info
+    container_name: rental_car_celery_prod
+    restart: unless-stopped
+    command: celery -A rental_car worker --loglevel=info --concurrency=2
     volumes:
-      - .:/app
       - media_volume:/app/mediafiles
     depends_on:
       - redis
       - web
-      - db
     networks:
       - rental_car_app_django_network
     env_file:
-      - .env
+      - .env.prod
 
   celery_beat:
     build: .
-    container_name: rental_car_celery_beat
+    container_name: rental_car_celery_beat_prod
+    restart: unless-stopped
     command: celery -A rental_car beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
     volumes:
-      - .:/app
+      - media_volume:/app/mediafiles
     depends_on:
       - redis
       - web
-      - db
     networks:
       - rental_car_app_django_network
     env_file:
-      - .env
+      - .env.prod
   
 volumes:
   static_volume:
-    driver: local
   media_volume:
-    driver: local
-  db_data:
-    driver: local
   redis_data:
-    driver: local
 
 networks:
   rental_car_app_django_network:
