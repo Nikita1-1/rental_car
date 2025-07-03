@@ -1,36 +1,28 @@
 FROM python:3.11-slim-bullseye
 
-# Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PYTHONPATH=/app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     gcc \
     pkg-config \
     curl \
     unzip \
-    # MySQL dependencies (fixed package names)
     default-libmysqlclient-dev \
     mariadb-client \
-    # WeasyPrint dependencies
+    libffi-dev \
+    libssl-dev \
+    libjpeg-dev \
+    libxml2 \
+    libxslt1.1 \
     libpango-1.0-0 \
     libpangoft2-1.0-0 \
     libpangocairo-1.0-0 \
     libgdk-pixbuf2.0-0 \
     libcairo2 \
-    libffi-dev \
     shared-mime-info \
-    # Image processing
-    libjpeg-dev \
-    # XML processing
-    libxml2 \
-    libxslt1.1 \
-    # SSL
-    libssl-dev \
-    # Fonts
     fontconfig \
     fonts-dejavu-core \
     && rm -rf /var/lib/apt/lists/* \
