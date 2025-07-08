@@ -30,13 +30,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure--qd_mo+(c$^pd%!3z((t-t0@96qg*cryrsxgom3t7g)xhdp72+'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool) 
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost').split(',')
-
+# ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost').split(',')
+ALLOWED_HOSTS = ['127.0.0.1','localhost']
 
 # Application definition
 
@@ -87,8 +87,8 @@ EMAIL_USE_SSL= False
 STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
 STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY')
 
-LOGIN_URL = 'user-auths:sign-in'
-LOGOUT_REDIRECT_URL = 'user-auths:sign-in'
+LOGIN_URL = 'user_auths:sign-in'
+LOGOUT_REDIRECT_URL = 'user_auths:sign-in'
 
 SECURE_FILE_PATH = os.path.join(BASE_DIR, 'secure_files')
 
