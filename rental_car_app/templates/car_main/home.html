@@ -23,7 +23,7 @@
         <!-- Pick-up -->
         <div class="flex flex-col space-y-2">
           <label class="text-white text-[20px]">Pick-up date & Time</label>
-          <div class="flex gap-2">
+          <div class="flex gap-2 text-black">
             <input type="date" name="checkin" class="date_selection bg-white text-black text-2xl rounded-lg p-2.5 w-[160px]">
             <input type="time" name="time_in" class="date_selection bg-white text-black text-2xl rounded-lg p-2.5 w-[130px]">
           </div>
@@ -32,7 +32,7 @@
         <!-- Return -->
         <div class="flex flex-col space-y-2">
           <label class="text-white text-[20px]">Return date & Time</label>
-          <div class="flex gap-2">
+          <div class="flex gap-2 text-black">
             <input type="date" name="checkout" class="date_selection bg-white text-black text-2xl rounded-lg p-2.5 w-[160px]">
             <input type="time" name="time_out" class="date_selection bg-white text-black text-2xl rounded-lg p-2.5 w-[130px]">
           </div>
@@ -91,10 +91,19 @@
   }
 
 @media screen and (max-width: 450px){
-  .date_selection{
+
+  input .date_selection{
     color: #000;
     
   }
+  input.date_selection,
+    input[type="date"],
+    input[type="time"] {
+        color: #000 !important;
+        -webkit-text-fill-color: #000 !important;
+        -webkit-appearance: none;
+        background-color: #fff !important;
+    }
 
   h1{
     font-size: 28px;
