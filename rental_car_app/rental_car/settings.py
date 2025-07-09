@@ -29,14 +29,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
+# # SECURITY WARNING: keep the secret key used in production secret!
+# SECRET_KEY = config('SECRET_KEY')
+
+# # SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = config('DEBUG', default=True, cast=bool) 
+
+# ALLOWED_HOSTS = ['127.0.0.1','localhost']
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure--qd_mo+(c$^pd%!3z((t-t0@96qg*cryrsxgom3t7g)xhdp72+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool) 
 
-# ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost').split(',')
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost').split(',')
+
+
 
 # Application definition
 
@@ -80,6 +89,7 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = 'live.smtp.mailtrap.io'
 EMAIL_HOST_USER = 'api'
 EMAIL_HOST_PASSWORD = '1f6b8929c121be0db2a4fe5a7671cda8'
+DEFAULT_FROM_EMAIL = 'Aspen Rental Car '
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL= False
