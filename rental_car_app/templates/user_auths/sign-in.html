@@ -32,17 +32,23 @@ Your browser does not support the video tag.
         
                                         <div class="login_container" id="tab2">
                                             <form method="POST" class="login_form">
-                                                {% csrf_token%}
+                                                {% csrf_token %}
                                                 <div class="floating-field">
-                                                    <input type="text" id="email" placeholder=" " required autofocus="True">
-                                                    <label for="email">Email</label>
+                                                    <input type="text" id="username" name="username" required autofocus="True">
+                                                    <label for="username">Username</label>
                                                 </div>
                                                 <div class="floating-field">
-                                                    <input type="text" id="password" placeholder=" " required autofocus="True">
+                                                    <input type="password" id="password" required autofocus="True">
                                                     <label for="password">Password</label>
                                                 </div>
                                                 
                                             <button type="submit" class="login_submit"> Login </button>
+
+                                            {%for message in messages%}
+                                
+                                            {{message}}
+                                            {%endfor%}
+
                                             </form>
                     
                                         </div>

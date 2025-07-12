@@ -17,6 +17,7 @@ import mimetypes
 from django.contrib.auth.decorators import user_passes_test
 from django.utils.encoding import filepath_to_uri
 from django.core.mail import send_mail
+from django.db import transaction, IntegrityError
 
 
 def RegisterUser(request):
@@ -26,50 +27,65 @@ def RegisterUser(request):
 
     if request.method == 'POST':
         form = UserRegisterForm(request.POST, request.FILES)
+
         if form.is_valid():
-            user = form.save(commit=False)
-            user.is_staff = False
-            user.is_superuser = False
-            user.is_active = True  # Ensure the user is active
-            user.save()
-
-            full_name = form.cleaned_data.get('full_name')
-            username = form.cleaned_data.get('username')
-            email = form.cleaned_data.get('email')
-            password = form.cleaned_data.get('password1')
-            drivers_license = form.cleaned_data.get('drivers_license')
             try:
-                profile = user.profile
-                profile.full_name = full_name
-                profile.drivers_license = drivers_license
-                profile.save()
-            except Profile.DoesNotExist:
-                Profile.objects.create(
-                    user=user,
-                    full_name=full_name,
-                    drivers_license=drivers_license
-                )
+                with transaction.atomic():
+                    user = form.save(commit=False)
+                    user.is_staff = False
+                    user.is_superuser = False
+                    user.is_active = True  # Ensure the user is active
+                    password = form.cleaned_data.get('password1')
+                    full_name = form.cleaned_data.get('full_name')
+                    username = form.cleaned_data.get('username')
+                    email = form.cleaned_data.get('email')
+                    user.set_password(password)
+                    username = user.username
+                    print(f"Username: {username}, Password: {password}, Full Name: {full_name}, Email: {email}")
+                    email = user.email
+                    user.save()
+                    drivers_license = form.cleaned_data.get('drivers_license')
+                    try:
+                        profile, created = Profile.objects.get_or_create(user=user)
+                        profile = user.profile
+                        profile.full_name = full_name
+                        profile.drivers_license = drivers_license
+                        profile.save()
+                        print("Check password match after save:", user.check_password(password))
+                    except Profile.DoesNotExist:
+                        Profile.objects.create(
+                            user=user,
+                            full_name=full_name,
+                            drivers_license=drivers_license
+                        )
 
-            print(f"Trying to authenticate with username: {username}, password: {password}")
-            user = authenticate(request, email=email, password=password)
-            print(f"Authenticated user: {user}")
+                    print(f"Trying to authenticate with username: {username}, password: {password}")
+                    user = authenticate(request, username=username, password=password)
+                    print(f"Authenticated user: {user}")
 
-            if user:
-                login(request, user)
-                messages.success(request, f"Hi {profile.full_name}, your account has been created successfully.")
-                email_send = send_mail(
-                    subject = "New User Created",
-                    message = f"Hi, admin! New user {profile.full_name} has been created successfully. Please confirm confirm their profile in admin dashboard.", 
-                    from_email = "hello@demomailtrap.co",
-                    recipient_list = ["aspencarcare@yahoo.com"]
-                )
-                if email_send:
-                    print("Email to admin sent successfully.")
-                return redirect('car_main:home')
-            else:
-                messages.error(request, "There was a problem logging you in.")
-        else:
-            print("Form errors:", form.errors)
+                    if user:
+                        login(request, user)
+                        messages.success(request, f"Hi {profile.full_name}, your account has been created successfully.")
+                        email_send = send_mail(
+                            subject = "New User Created",
+                            message = f"Hi, admin! New user {profile.full_name} has been created successfully. Please confirm confirm their profile in admin dashboard.", 
+                            from_email = "info@aspenrentacar.com",
+                            recipient_list = ["aspencarcare@yahoo.com"]
+                        )
+                        email_send = send_mail(
+                            subject = "Congratulations on your new account!",
+                            message = f"Hi, {profile.full_name} ! Your account has been created successfully. You can now log in to your account, however wait for admin to confirm you account, takes up to 24 hours", 
+                            from_email = "info@aspenrentacar.com",
+                            recipient_list = [email]
+                        )
+                        if email_send:
+                            print("Email to admin sent successfully.")
+                        return redirect('car_main:home')
+                    
+            except Exception as e:
+                messages.error(request, f"An error occurred while creating your account: {str(e)}")
+                print(f"Error during user registration: {e}")
+                print("Form errors:", form.errors)
     else:
         form = UserRegisterForm()
 
@@ -77,12 +93,12 @@ def RegisterUser(request):
 
 def LoginUser(request):
     if request.method == 'POST':
-        email = request.POST.get('email')
+        username = request.POST.get('username')
         password = request.POST.get('password')
 
         try:
-            user = User.objects.get(email=email)
-            user_auths = authenticate(request, email=email, password=password)
+            user_auths = authenticate(request, username=username, password=password)
+        
 
             if user_auths is not None:
                 login(request, user_auths)

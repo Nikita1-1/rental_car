@@ -21,14 +21,14 @@ def user_directory_path(instance, filename):
 
 class User(AbstractUser):
     full_name = models.CharField(max_length=1000, null=True, blank=True)
-    username = models.CharField(max_length=100, null=True, blank=True)
+    username = models.CharField(max_length=100, unique=True, blank=True)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=100, null=True, blank=True)
 
     otp = models.CharField(max_length=100, null=True, blank=True)
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['email']
 
     def __str__(self):
         return self.username
