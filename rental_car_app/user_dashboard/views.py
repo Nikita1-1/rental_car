@@ -19,7 +19,7 @@ from user_auths.forms import ProfileUpdateForm, UserUpdateForm
 @login_required
 def dashboard(request):
     profile = request.user.profile
-    bookings = Booking.objects.filter(profile=profile, payment_status__in=["paid", 'unpaid'])
+    bookings = Booking.objects.filter(profile=profile, payment_status__in=["paid", 'unpaid', 'pending', 'processing'])
     total_spent = Booking.objects.filter(profile=profile, payment_status="paid").aggregate(amount=models.Sum('total_price'))
 
     context = {
