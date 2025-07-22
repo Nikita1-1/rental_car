@@ -29,18 +29,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
-# # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = config('SECRET_KEY')
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = config('SECRET_KEY')
 
-# # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = config('DEBUG', default=True, cast=bool) 
+# SECURITY WARNING: don't run with debug turned on in production!
+#DEBUG = False
 
 # ALLOWED_HOSTS = ['127.0.0.1','localhost']
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure--qd_mo+(c$^pd%!3z((t-t0@96qg*cryrsxgom3t7g)xhdp72+'
+# SECRET_KEY = 'django-insecure--qd_mo+(c$^pd%!3z((t-t0@96qg*cryrsxgom3t7g)xhdp72+'
 
-# SECURITY WARNING: don't run with debug turned on in production!
+# # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool) 
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost').split(',')
@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'django_cleanup.apps.CleanupConfig',
     'django_celery_beat',
 
+    'storages',
 
     # Custom Apps
     'car',
@@ -88,11 +89,25 @@ INSTALLED_APPS = [
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = 'live.smtp.mailtrap.io'
 EMAIL_HOST_USER = 'api'
-EMAIL_HOST_PASSWORD = '1f6b8929c121be0db2a4fe5a7671cda8'
-DEFAULT_FROM_EMAIL = 'Aspen Rental Car '
+EMAIL_HOST_PASSWORD = config('EMAIL_PSWRD')
+DEFAULT_FROM_EMAIL = 'Aspen Rental Car'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL= False
+
+
+AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_FILE_OVERWRITE = False
+AWS_S3_URL_PROTOCOL = 'https'
+AWS_S3_USE_SSL = True
+AWS_S3_VERIFY = True
+AWS_S3_REGION_NAME = 'us-east-1'
+AWS_S3_CUSTOM_DOMAIN = 'acr-static.s3.amazonaws.com'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
 
 STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
 STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY')
