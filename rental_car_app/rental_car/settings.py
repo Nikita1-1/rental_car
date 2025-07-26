@@ -81,7 +81,6 @@ INSTALLED_APPS = [
     'paypal.standard.ipn',
     'geoip2',
     'django_user_agents',
-    'storages',
     'channels',
 
 ]
