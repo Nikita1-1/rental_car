@@ -21,7 +21,7 @@ def user_directory_path(instance, filename):
 
 class User(AbstractUser):
     full_name = models.CharField(max_length=1000, null=True, blank=True)
-    username = models.CharField(max_length=100, unique=True, blank=True)
+    username = models.CharField(max_length=100, unique=True, blank=True, null=False)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=100, null=True, blank=True)
 
