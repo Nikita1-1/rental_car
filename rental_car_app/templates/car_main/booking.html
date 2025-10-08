@@ -10,15 +10,15 @@
     <div class="row">
       <div class="">
       <label>First Name</label>
-      <input name="full_name" type="text" value="{{request.user.profile.full_name|title}}" placeholder="First Name">
+      <input class="stl" name="full_name" type="text" value="{{request.user.profile.full_name|title}}" placeholder="First Name">
       </div>
       <div class="">
         <label>E-Mail</label>
-        <input name="email" type="text" value="{{request.user.email}}" placeholder="Email">
+        <input class="stl" name="email" type="text" value="{{request.user.email}}" placeholder="Email">
       </div>
       <div class="medium-icons">
         <label>Phone</label>
-        <input name="phone" type="text" value="{{request.user.phone}}" placeholder="Phone">
+        <input class="stl" name="phone" type="text" value="{{request.user.phone}}" placeholder="Phone">
       </div>
       <input type="hidden" name="car_slug" value="{{ selected_car.car_slug }}" id="car_slug">
       <input type="hidden" name="car_id" value="{{ selected_car.car_id }}" id="car_id">
@@ -61,6 +61,15 @@
 
 
 <style>
+
+  .stl{
+    color: white;
+    padding: 7px 15px;
+    border-radius: 6px;
+    background-color: transparent;
+    margin-bottom: 2px;
+    border: 1px solid #ffffff;
+  }
   .wrapper{
     display: flex;
     flex-direction: row;
@@ -91,6 +100,14 @@
     top:140px;
     left:60px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+
+  .row{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+    margin-left: -15px;
   }
 
   .button_to_checkout{
