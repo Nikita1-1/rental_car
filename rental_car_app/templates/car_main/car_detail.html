@@ -86,7 +86,7 @@
                     
                     <div class="mrg additional_baby_seat">
                         <div class="baby_option">
-                            <a href="#">Select A Baby Seat</a>
+                            <label for="">Select A Baby Seat</label>
                             <select name="baby_seat" id="seat-option" class="" required>
                                 <option value="">Select a baby seat</option>
                                 {% for seat in baby_seats %}
@@ -98,7 +98,7 @@
                     
                     <div class="mrg additional_rack">
                         <div class="rack ">
-                            <a href="#">Select a rack</a>
+                            <label for="">Select a rack</label>
                             <select name="rack" class="" id="rack" required>
                                 <option value="{{rack.name}} - ${{rack.price}}">Rack</option>
                                 {% for rack in racks %}
@@ -128,6 +128,9 @@
 
 
 <style>
+    label{
+        margin-right: 10px;
+    }
 
     .mrg{
         margin-bottom: 10px;
@@ -341,6 +344,15 @@ select:active, select:focus{
     border: 2px solid black;
 
   }
+
+  #flight_number{
+    color: white;
+    padding: 7px 15px;
+    border-radius: 6px;
+    background-color: transparent;
+    margin-bottom: 2px;
+    border: 1px solid #ffffff;
+}
 
 
   @media screen and (max-width: 460px){
