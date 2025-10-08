@@ -11,7 +11,7 @@
                     {{checkin}}
                     {{checkout}}
                 </span>
-                <span class="location"><img class="location_img" src="/media/location.png" alt=""> <a href="https://maps.app.goo.gl/U9sMdvDSXXhdX2cZ9" class="listing-address"> <i class=""></i>Pick Up: {{car.location}}  </a> </span>
+                <span class="location"><img class="location_img" src="/media/location.png" alt=""> <a href="https://maps.app.goo.gl/U9sMdvDSXXhdX2cZ9" class="listing-address"> <i class=""></i>Pick Up: {{car.location}} </a></span>
                 <span class="call_now"><img class="call_img" src="/media/phone.png" alt=""><i class=""></i>Contact: </span>
                     <p class="info">
                         Car: 
@@ -58,7 +58,7 @@
 
     
 
-                    <div class="additional_delivery_option">
+                    <div class="mrg additional_delivery_option">
                         <div class="delivery">
                           <label for="delivery-option">Delivery Option</label>
                           <select name="delivery" id="delivery-option" required>
@@ -79,12 +79,12 @@
                       </div>
 
 
-                    <div class="flight_number">
+                    <div class="mrg flight_number">
                         <label for="">Flight Number</label>
                         <input type="text" name="flight_number" id="flight_number" value="" placeholder="Enter your flight number" >
                     </div>
                     
-                    <div class="additional_baby_seat">
+                    <div class="mrg additional_baby_seat">
                         <div class="baby_option">
                             <a href="#">Select A Baby Seat</a>
                             <select name="baby_seat" id="seat-option" class="" required>
@@ -96,7 +96,7 @@
                         </div>
                     </div>
                     
-                    <div class="additional_rack">
+                    <div class="mrg additional_rack">
                         <div class="rack ">
                             <a href="#">Select a rack</a>
                             <select name="rack" class="" id="rack" required>
@@ -107,14 +107,14 @@
                             </select>
                         </div>
                     </div>
-                    <div class="toggle_wrapper">
+                    <div class="mrg toggle_wrapper">
                         <label class="toggle_lable" for="prepaid_fuel">Prepaid Fuel</label>
                         <label class="switch">    
                             <input type="checkbox" name="prepaid_fuel" id="prepaid_fuel" value="False" {% if booking.prepaid_fuel %}checked{% endif %}>
                             <span class="slider"></span>
                         </label>
                     </div>
-                    <div class="toggle_wrapper">
+                    <div class="mrg toggle_wrapper">
                         <label class="toggle_lable" for="second_driver">Second Driver</label>
                         <label class="switch">
                             <input type="checkbox" name="second_driver" id="additional_driver" value="False">{% if booking.additional_driver %}checked{% endif %}>
@@ -128,6 +128,10 @@
 
 
 <style>
+
+    .mrg{
+        margin-bottom: 10px;
+    }
 
     .signature-form{
         position: absolute;
@@ -300,7 +304,16 @@
 }
 
 select{
-    color: black;
+    color: white;
+    padding: 7px 15px;
+    border-radius: 6px;
+    background-color: transparent;
+    margin-bottom: 2px;
+    border: 1px solid #ffffff;
+}
+
+select:active, select:focus{
+    transition: all 0.5s ease  ;
 }
 
 .add-to-selection{
