@@ -165,7 +165,7 @@ setInterval(updateBooknigStatus, 600000);
   border-radius: 8px;
   min-width: 300px;
   width: 450px;
-  margin-top: 10%;
+  margin-top: 8%;
 }
 
 .right-panel {
@@ -449,26 +449,30 @@ checkoutButton.addEventListener('click', function () {
   checkoutButton.innerHTML = "Processing...";
 
   fetch("/api/create_checkout_session/{{booking.booking_id}}/", {
-    method: "POST",
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      email: email,
-      full_name: fullName,
-      phone: phone,
-    })
+  method: "POST",
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    email: "{{booking.email}}",
+    full_name: "{{booking.full_name}}",
+    phone: "{{booking.phone}}",
   })
-  .then(response => response.json())
-  .then(session =>{
-    if (session){
-      return stripe.redirectToCheckout({ sessionId: session.sessionId });
-    } else {
-      throw new Error (session.error || "Session ID is missing")
-    }
-  }).catch(function (error) {
-    alert("Error: " + error.message);
-  });
+})
+.then(response => response.json())
+.then(session => {
+  if (session.error) {
+    throw new Error(session.error);
+  }
+  if (!session.sessionId) {
+    throw new Error("No session ID returned from backend");
+  }
+  return stripe.redirectToCheckout({ sessionId: session.sessionId });
+})
+.catch(error => {
+  alert("Error: " + error.message);
+  checkoutButton.innerHTML = "Pay with Stripe";
+});
 });
 
 </script>

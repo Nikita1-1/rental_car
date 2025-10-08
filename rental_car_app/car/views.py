@@ -551,6 +551,7 @@ def payment_success(request, booking_id):
             booking.stripe_payment = session_id
             booking.is_active = True
             booking.save()
+            own_email = "info@aspenrentacar.com"
             messages.success(request, "Payment successful!")
             if 'selection_data_obj' in request.session:
                 del request.session['selection_data_obj']
@@ -558,7 +559,8 @@ def payment_success(request, booking_id):
             email_send = send_mail(
                             subject = "Booking Confirmation",
                             message = f"Hi, {booking.full_name}! Thank you for booking {booking.car} from Aspen Car Rental. Your booking starts on {booking.check_in_date} to {booking.check_out_date} with booking id {booking_id} has been confirmed. If your choose delivery option, your car will be delivered to the address: {booking.delivery_address} or pick up: {booking.car.location}. Please do not respond to this email. For any questions please contact us: +1-00000000",
-                            from_email = "hello@demomailtrap.co",
+                      
+                            from_email = own_email,
                             recipient_list = [booking.email],
                         )
             if email_send:
@@ -568,8 +570,8 @@ def payment_success(request, booking_id):
             email_send = send_mail(
                             subject = f'New booking {booking_id} for {booking.profile}',
                             message = f'Hi Admin! New booking {booking_id} for {booking.profile} has been confirmed. Booking details: {booking}. Booking dates are: {booking.check_in_date} to {booking.check_out_date}. Viechle details: {booking.car}. Delivery address: {booking.delivery_address}.',
-                            from_email = "hello@demomailtrap.co",
-                            recipient_list = ["aspencarcare@yahoo.com"]
+                            from_email = own_email,
+                            recipient_list = [own_email,]
                         )
             if email_send:
                 print("Email sent successfully.")
