@@ -139,20 +139,32 @@
 </style>
 
 <script>
-document.addEventListener("DOMContentLoaded", function(){
-  // Correct the method name to getElementById
+document.addEventListener("DOMContentLoaded", function () {
   const checkinInput = document.getElementById("checkin");
   const checkoutInput = document.getElementById("checkout");
 
+  // Set today's date as min for check-in
   const today = new Date();
+  const formattedToday = today.toISOString().split("T")[0];
+  checkinInput.min = formattedToday;
 
-  // Format today's date as YYYY-MM-DD
-  const formattedDate = today.toISOString().split("T")[0];
-  checkinInput.setAttribute("min", formattedDate);
-  
-  today.setDate(today.getDate() + 1); 
-  const nextDayFormatted = today.toISOString().split("T")[0];
-  checkoutInput.setAttribute("min", nextDayFormatted);
+  // When user picks a check-in date, update checkout min accordingly
+  checkinInput.addEventListener("change", function () {
+    const checkinDate = new Date(this.value);
+    checkinDate.setDate(checkinDate.getDate() + 1); // Checkout must be at least next day
+    const formattedNextDay = checkinDate.toISOString().split("T")[0];
+    checkoutInput.min = formattedNextDay;
+
+    // If checkout is before the new min, reset it
+    if (checkoutInput.value < formattedNextDay) {
+      checkoutInput.value = formattedNextDay;
+    }
+  });
+
+  // Set initial checkout min date as tomorrow
+  const initialCheckout = new Date();
+  initialCheckout.setDate(initialCheckout.getDate() + 1);
+  checkoutInput.min = initialCheckout.toISOString().split("T")[0];
 });
 
 document.addeventlistener("DOMContentLoaded", function(){
