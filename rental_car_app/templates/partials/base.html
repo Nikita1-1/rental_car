@@ -86,7 +86,7 @@
         {% block content %}
         {% endblock content %}
       </div>
-     <footer class="absolute bottom-0 w-full flex justify-between items-center px-6 pt-4 pb-0 text-md bg-black/50 font-chillax text-white z-10">
+     <footer class="mbl_footer absolute bottom-0 w-full flex justify-between items-center px-6 pt-4 pb-0 text-md bg-black/50 font-chillax text-white z-10">
         <span style="color:rgb(157, 156, 156); font-size: 18px;"><a href="{% url 'legal' %}" target="_blank">Legal</a></span>
         <span style="color:rgb(157, 156, 156)"><span style="font-size: 18px;">&reg</span> All Rights Are Reserved</span>
         <span></span>
@@ -287,11 +287,12 @@
 
 @media  screen and (max-width: 460px) {
   .content{
-    overflow-y: auto;
-    margin-top: 100px;
-    height: 81vh;
-    scrollbar-width: none;
-  }
+        overflow-y: auto;
+        margin-top: 75px;
+        height: 88vh;
+        scrollbar-width: none;
+        width: 100%;
+    }
   
 
   .mobile_nav{
@@ -321,6 +322,10 @@
   }
   .booking{
     margin-right:-30px;
+  }
+
+  .mbl_footer{
+    bottom:15px;
   }
 }
 
