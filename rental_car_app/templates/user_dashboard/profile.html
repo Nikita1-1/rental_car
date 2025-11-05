@@ -16,45 +16,58 @@
                       <div class="my-profile">
                         {{u_form.errors}}
                         {{p_form.errors}}
-                        <form class="row with-forms" method="POST" enctype="multipart/form-data">
-                            {% csrf_token %}
+         <!-- Profile form -->
+<form class="row with-forms" method="POST" enctype="multipart/form-data" action="{% url 'dashboard:profile' %}">
+  {% csrf_token %}
 
-                            <div class="col-md-12">
-                              <div class="edit-profile-photo">
-                                  <img id="profile_image_preview" src="{{ profile.image.url }}" 
-                                      style="width: 200px; height: 200px; object-fit: cover;" alt="">
-                                  <div class="photoUpload">
-                                      <span><i class="fa fa-upload"></i> Upload Photo</span>
-                                      {{ p_form.image }}
-                                  </div>
-                              </div>
-                          </div>
+  <div class="col-md-12">
+    <div class="edit-profile-photo">
+      <img id="profile_image_preview"
+           src="{{ profile.get_image_url }}"
+           alt="Profile photo"
+           style="width: 200px; height: 200px; object-fit: cover; border-radius: 8px;">
+      <div class="photoUpload">
+        <label for="{{ p_form.image.id_for_label }}" class="button">
+          <h2>Upload Profile Picture<i class="fa fa-upload"></i></h2> 
+        </label>
+        <input type="file"
+               name="{{ p_form.image.html_name }}"
+               id="{{ p_form.image.id_for_label }}"
+               accept="image/*"
+               style="display:none;"
+               onchange="previewProfileImage(event)">
+        {{ p_form.image.errors }}
+      </div>
+    </div>
+  </div>
 
-                            <div class="col-md-6">
-                                <label>Full Name</label>	
-                                {{p_form.full_name}}					
-                            </div>
+  <div class="col-md-6">
+    <label>Full Name</label>
+    {{ p_form.full_name }}
+  </div>
+  
+    <div class="col-md-6">
+      <label class="text-white text-[20px]">Username</label>
+      {{ u_form.username }}
+    </div>
 
-                            <div class="col-md-6">
-                                <label>Email</label>	
-                                {{u_form.email}}					
-                            </div>
-                            <div class="col-md-4">
-                                <label>Mobile</label>	
-                                {{p_form.phone}}					
-                            </div>
-                            <div class="col-md-6">
-                            <form  method="POST" enctype="multipart/form-data"  action="{% url 'dashboard:profile' %}">
-                                {% csrf_token %}
-                                Upload Driver License
-                                {{ form.as_p }}
-                                <button type="submit">Update DL</button>
-                            </form>
-                            </div>
-                            <div class="col-md-6">
-                                <button class="button preview btn_center_item margin-top-15" type="submit">Save Changes</button>
-                            </div>
-                          </form>	
+    <div class="col-md-6">
+      <label class="text-white text-[20px]">Email</label>
+      {{ u_form.email }}
+    </div>
+  
+  <div class="col-md-4">
+    <label >Phone Number</label>
+    {{ p_form.phone }}
+  </div>
+
+  <div class="col-md-6">
+    <button class="button preview btn_center_item margin-top-15" type="submit">
+      Save Changes
+    </button>
+  </div>
+</form>
+
                       </div>
                     </div>
                   </div>
@@ -63,14 +76,14 @@
         </div>
     </div>
 
-    <script>
-        // Show Image Preview Before Upload 
-        var loadFile = function (event) {
-          var output2 = document.getElementById("profile_image_preview");
-          output2.src = URL.createObjectURL(event.target.files[0]);
-          output2.onload = function () {
-            URL.revokeObjectURL(output2.src);
-          };
+   <script>
+      function previewProfileImage(event) {
+        const reader = new FileReader();
+        reader.onload = function() {
+          const output = document.getElementById('profile_image_preview');
+          output.src = reader.result;
         };
-      </script>
+        reader.readAsDataURL(event.target.files[0]);
+      }
+</script>
 {% endblock content %}

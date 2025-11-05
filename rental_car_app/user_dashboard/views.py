@@ -102,12 +102,27 @@ def cancel_booking(request, booking_id):
     return redirect("dashboard:bookings")
 
 @login_required
-def dashboard_profile_update(request):
-    if request.method == "POST":
-        form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
-        if form.is_valid():
-            form.save()
+def profile_update(request):
+    profile = request.user.profile
+
+    if request.method == 'POST':
+        p_form = ProfileUpdateForm(request.POST, request.FILES, instance=profile)
+        u_form = UserUpdateForm(request.POST, instance=request.user)
+
+        if p_form.is_valid() and u_form.is_valid():
+            p_form.save()
+            u_form.save()
+            messages.success(request, "Your profile has been updated successfully!")
             return redirect('dashboard:profile')
+        else:
+            messages.error(request, "Please correct the errors below.")
     else:
-        form = ProfileUpdateForm(instance=request.user.profile)
-    return render(request, 'user_dashboard/profile.html', {'form':form})
+        p_form = ProfileUpdateForm(instance=profile)
+        u_form = UserUpdateForm(instance=request.user)
+
+    context = {
+        'p_form': p_form,
+        'u_form': u_form,
+        'profile': profile,
+    }
+    return render(request, 'dashboard/profile.html', context)

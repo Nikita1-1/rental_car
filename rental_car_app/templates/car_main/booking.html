@@ -6,7 +6,7 @@
   <div class="form">
 <form class="billing_form" id="billingForm" method="POST" action="{% url 'car_main:selected_car' %}">
     {% csrf_token %}
-    <h1 style="color: white; position: absolute; top:20px; left: 42px; font-size: 24px;">Billing Information</h1>
+    <h1 style="color: white; position: absolute; top:20px; left: 25px; font-size: 24px;">Billing Information</h1>
     <div class="row">
       <div class="">
       <label>First Name</label>
@@ -92,7 +92,7 @@
   .billing_form{
     width: 40%;
     height: 40%;
-    padding: 60px;
+    padding: 40px;
     background-color: none;
     border: 2px solid white;
     border-radius: 18px;
@@ -105,7 +105,7 @@
   .row{
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 0px;
     margin-top: 20px;
     margin-left: -15px;
   }
@@ -115,7 +115,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 50px;
+    height: 55px;
     padding: 15px 20px;
     border: 2px solid white;
     color: white;
@@ -205,7 +205,7 @@
     top: 80px;
     left:5px;
     width:95%;
-    height: 48%;
+    height: 50%;
   }
 
   .button_to_checkout{

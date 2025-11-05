@@ -13,7 +13,7 @@ urlpatterns = [
     path("bookings/", views.bookings, name="bookings"),
     path("profile/", views.profile, name="profile"),
     path("booking/<str:booking_id>/cancel/", views.cancel_booking, name="cancel_booking"),
-    path("profile/update-dl/", views.dashboard_profile_update, name="profile"),
+    path("profile/", views.profile_update, name="profile"),
 
 # Change Password View
     path('change-password/',auth_views.PasswordChangeView.as_view(template_name='user_dashboard/change-password.html',success_url = '/dashboard/password-changed/'),name='change_password'),
