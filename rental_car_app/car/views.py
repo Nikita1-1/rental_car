@@ -26,7 +26,7 @@ from django.template.loader import render_to_string
 from weasyprint import HTML
 from django.shortcuts import redirect
 from django.contrib import messages
-from .models import Car, Booking, Booking_Features, Delivery, BabySeat, Racks_feature
+from .models import Car, Booking, Booking_Features, BabySeat, Racks_feature
 
 from decimal import Decimal
 import json
@@ -39,7 +39,10 @@ from django.conf import settings
 
 def index(request):
     cars = Car.objects.filter(status='Available')
+    locations = Delivery_feature.objects.all()
+
     context={
+        'locations': locations,
         'cars': cars
     }
     return render(request, 'car_main/home.html', context)
@@ -71,7 +74,14 @@ def car_detail_page(request, slug):
         car_model = request.POST.get('car_model')
         car_year = request.POST.get('car_year')
         car_total_price = request.POST.get('car_total_price')
-
+        delivery_address = request.POST.get('delivery_location')
+        try:
+            delivery_obj = Delivery_feature.objects.get(delivery_address=delivery_address)
+            delivery = delivery_obj.delivery_address
+            delivery_price = delivery_obj.price
+        except Delivery_feature.DoesNotExist:
+            delivery = "Not selected"
+            delivery_price = 0
         checkin = request.POST.get('checkin')
         checkout = request.POST.get('checkout')
         check_in_time = request.POST.get('time_in')
@@ -93,7 +103,6 @@ def car_detail_page(request, slug):
 
     baby_seats = BabySeat.objects.all()
     racks = Racks_feature.objects.all()
-    deliveries = Delivery.objects.all()
 
     context = {
         'car': car,
@@ -107,9 +116,10 @@ def car_detail_page(request, slug):
         'checkout': checkout,
         'check_in_time': check_in_time,
         'check_out_time': check_out_time,
-        'deliveries': deliveries,
+        'delivery_location': delivery,
         'baby_seats': baby_seats,
         'user': user,
+        'delivery_price': delivery_price,
     }
 
     return render(request, 'car_main/car_detail.html', context)
@@ -120,22 +130,39 @@ def str_to_bool(val):
 def clean_price(price_str):
     return float(re.sub(r"[^\d.]", "", str(price_str)))
 
-def parse_time_string(t_str):
 
+def parse_time_string(t_str):
     if not t_str:
         return None
     
     s = t_str.strip().lower().replace(".", "")
-
+    
+    # Match HH:MM optionally with AM/PM
     m = re.match(r'^(\d{1,2}):(\d{2})\s*([ap]m)?$', s)
-    if not m:
-        parts = s.split(':')
-        return time(int(parts[0],[1]))
-    hour, minute, meridiem = m.groups()
-    h = int(hour) % 12
-    if meridiem == 'p':
-        h += 12
-    return time(h, int(minute))    
+    if m:
+        hour, minute, meridiem = m.groups()
+        h = int(hour) % 12
+        if meridiem == 'p':
+            h += 12
+        return time(h, int(minute))
+    
+    # Fallback: try to match simple HH with optional AM/PM
+    m2 = re.match(r'^(\d{1,2})\s*([ap]m)?$', s)
+    if m2:
+        hour, meridiem = m2.groups()
+        h = int(hour) % 12
+        if meridiem == 'p':
+            h += 12
+        return time(h, 0)
+    
+    # Last resort: attempt HH:MM without AM/PM
+    parts = s.split(':')
+    try:
+        hour = int(parts[0])
+        minute = int(parts[1]) if len(parts) > 1 else 0
+        return time(hour, minute)
+    except ValueError:
+        return None   
 
 def parse_data_string(data_str):
     if not data_str:
@@ -167,17 +194,29 @@ def selected_car(request):
             checkout = item['checkout']
             check_in_time = item['check_in_time']
             check_out_time = item['check_out_time']
+            delivery = item['delivery_option']  # corrected key
+            delivery_price = item['delivery_price']
             total_price = clean_price(item.get('total_price'))
+            delivery_instance = None
+            if delivery:  # delivery can be id or string
+                try:
+                    # First try ID
+                    delivery_instance = Delivery_feature.objects.get(id=delivery)
+                except (Delivery_feature.DoesNotExist, ValueError):
+                    # Fallback: try matching by address
+                    try:
+                        delivery_instance = Delivery_feature.objects.get(delivery_address=delivery)
+                    except Delivery_feature.DoesNotExist:
+                        delivery_instance = None
+    
 
-            delivery_id = item.get('delivery', "Pick Up")  # corrected key
             baby_seat_slug = item.get('baby_seat', None)
             flight_number = item.get('flight_number', None)
             second_driver = str_to_bool(item.get('second_driver', False))
             prepaid_fuel = str_to_bool(item.get('prepaid_fuel', False))
             rack_slug = item.get('rack', None)
-            delivery_address = item.get('address', None)
-           
-
+       
+       
             user = request.user
             car = Car.objects.get(id=id)
 
@@ -191,13 +230,7 @@ def selected_car(request):
             email = request.POST.get("email")
             phone = request.POST.get("phone")
 
-            # Delivery
-            delivery_instance = None
-            if delivery_id and delivery_id != "Pick Up":
-                try:
-                    delivery_instance = Delivery.objects.get(delivery=delivery_id)
-                except Delivery.DoesNotExist:
-                    delivery_instance = None
+           
 
             # Baby Seat
             baby_seat_instance = None
@@ -242,7 +275,6 @@ def selected_car(request):
                 total_price=total_price,
                 email=email,
                 full_name=full_name,
-                delivery_address=delivery_address,
                 phone=phone,
                 created_at=timezone.now(),
                 profile=profile,
@@ -253,9 +285,9 @@ def selected_car(request):
                 prepaid_fuel=prepaid_fuel,
                 additional_driver=second_driver,
                 flight_number=flight_number,
-                delivery=delivery_instance,
                 baby_seat=baby_seat_instance,
                 racks=rack_instance,
+                Delivery_feature=delivery_instance,
             )
             print("BABY SEAT INSTANCE:", baby_seat_instance)
 
@@ -268,6 +300,7 @@ def selected_car(request):
             booking.payment_status = "unpaid"
             booking.profile = profile
             booking.save()
+            booking_feature.save()
 
             messages.success(request, f'Checkout Now! Booking id is {booking.booking_id} and {car.make} {car.model}')
             return redirect('car_main:checkout', booking_id=booking.booking_id)
@@ -310,7 +343,7 @@ def generate_booking_pdf(request, booking_id):
                 'check_out_time': booking.check_out_time,
                 'total_price': booking.total_price,
                 'total_days': booking.total_days,
-                'delivery_address': booking.delivery_address,
+                'delivery_address': booking_features.Delivery_feature if booking_features else None,
                 'initials': escape(initials),
                 "created_at": booking.created_at,
                 'acknowledged': acknowledgment,
@@ -337,6 +370,8 @@ def add_trip_to_session(request, slug):
         'car_make': request.GET.get('car_make'),
         'car_model': request.GET.get('car_model'),
         'car_year': request.GET.get('car_year'),
+        'delivery_option': request.GET.get('delivery_option'),
+        'delivery_price': request.GET.get('delivery_price'),
         'car_total_price': request.GET.get('car_total_price'),
         'check_in_time': request.GET.get('check_in_time'),
         'check_out_time': request.GET.get('check_out_time'),
@@ -357,7 +392,6 @@ def update_pdf(request, booking_id):
         'booking': booking,
         'profile': booking.profile,
         'car': booking.car,
-        'delivery': booking_features.delivery if booking_features else None,
         'baby_seat': booking_features.baby_seat if booking_features else None,
         'racks': booking_features.racks if booking_features else None,
         'check_in_date': booking.check_in_date,
@@ -366,7 +400,7 @@ def update_pdf(request, booking_id):
         'check_out_time': booking.check_out_time,
         'total_price': booking.total_price,
         'total_days': booking.total_days,
-        'delivery_address': booking.delivery_address,
+        'delivery_address': booking_features.Delivery_feature if booking_features else None,
         'initials': escape(booking.signature or ""),
         'created_at': booking.created_at,
         'acknowledged': booking.acknowledged,
@@ -558,7 +592,7 @@ def payment_success(request, booking_id):
 
             email_send = send_mail(
                             subject = "Booking Confirmation",
-                            message = f"Hi, {booking.full_name}! Thank you for booking {booking.car} from Aspen Car Rental. Your booking starts on {booking.check_in_date} to {booking.check_out_date} with booking id {booking_id} has been confirmed. If your choose delivery option, your car will be delivered to the address: {booking.delivery_address} or pick up: {booking.car.location}. Please do not respond to this email. For any questions please contact us: +1-00000000",
+                            message = f"Hi, {booking.full_name}! Thank you for booking {booking.car} from Aspen Car Rental. Your booking starts on {booking.check_in_date} to {booking.check_out_date} with booking id {booking_id} has been confirmed. If your choose delivery option, your car will be delivered to the address: {booking.delivery_address}. Please do not respond to this email. For any questions please contact us: +1-00000000",
                       
                             from_email = own_email,
                             recipient_list = [booking.email],

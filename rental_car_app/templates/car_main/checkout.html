@@ -80,8 +80,8 @@
         <h1 class="head">Booking Summary</h1>
         
         <div class="summary-card">
-          <h2 style="color: white;">Car: {{booking.car}}</h2>
-          <h2 style="color:white">Total Days: {{ booking.total_days }} Days</h2>
+          <h2 style="color: #546bb5;">Car: {{booking.car}}</h2>
+          <h2 style="color:#546bb5">Total Days: {{ booking.total_days }} Days</h2>
         </div>
         <ul>
           <li>Check-in: {{ booking.check_in_date }} at {{booking.check_in_time}}</li>
@@ -90,7 +90,7 @@
           <li>Baby Seat: {{ booking_features.baby_seat.name|default_if_none:"N/A" }}</li>
           <li>Additional Driver: {% if booking_features.additional_driver %}Yes{% else %}No{% endif %}</li>
           <li>Flight Number: {{ booking_features.flight_number|default:"N/A" }}</li>
-          <li>Delivery Option: {{ booking_features.delivery|default:"N/A" }}</li>
+          <li>Delivery Option: {{ booking_features.Delivery_feature}}</li>
           <li>Rack: {{ booking_features.racks.name|default:"N/A" }}</li>
           <li>Deposit: ${{ deposit }}
           <li>V.A.T: $0.00</li>
@@ -99,7 +99,7 @@
           {% endif %}
         </ul>
         
-        <div class="total-cost">Total Cost: ${{booking.total_price}}</div>
+        <div class="total-cost" style="color: #546bb5;">Total Cost: ${{booking.total_price}}</div>
         <form method="POST" id="ApplyDiscount">
           {% csrf_token %}
           <input name="code" placeholder="Have a coupon? Enter here" type="text">
@@ -141,8 +141,8 @@ setInterval(updateBooknigStatus, 600000);
 }
 
 .head{
-  color: white;
-  font-size: 24px;
+  color: #4059AD;
+  font-size: 20px;
   margin-bottom: 10px;
 }
 
@@ -159,13 +159,14 @@ setInterval(updateBooknigStatus, 600000);
 .left-panel,
 .right-panel {
   flex: 1 1 45%;
-  background: none;
   padding: 1em;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 10px;
   min-width: 300px;
   width: 450px;
   margin-top: 8%;
+  background: #EFF2F1;
+  color: #546bb5;
+  box-shadow: 10px 10px 14px -2px rgba(0, 0, 0, 0.3);  
 }
 
 .right-panel {
@@ -183,7 +184,7 @@ input[type="text"] {
     width: 100%;
     height: calc(3em + 1px);
     padding: 20px;
-    border: 1px solid #ccc;
+    border: 1px solid #4059AD;
     background: none;
     resize: none;
     outline: none;
@@ -191,10 +192,10 @@ input[type="text"] {
 }
 
 input[type="text"][required]:focus {
-  border-color: rgb(165, 163, 163);
+  border-color: #546bb5;
 }
 input[type="text"][required]:focus + label[placeholder]:before {
-  color: #d6d4d4;
+  color: #4059AD;
 }
 input[type="text"][required]:focus + label[placeholder]:before,
 input[type="text"][required]:valid + label[placeholder]:before {
@@ -219,7 +220,7 @@ input[type="text"][required] + label[placeholder]:before {
   display: inline-block;
   margin: 0 calc(1em + 2px);
   padding: 0 2px;
-  color: #898989;
+  color: #546bb5;
   white-space: nowrap;
   transition: 0.3s ease-in-out;
   background-image: linear-gradient(to bottom, #fff, #fff);
@@ -235,17 +236,20 @@ input[type="text"][required] + label[placeholder]:before {
 
 .summary ul li {
   padding: 0.3em 0;
+  color: #546bb5;
+  font-size: 16px;
 }
 
 #checkout-button {
   margin-top: 1em;
   width: 100%;
   padding: 0.8em;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 6px;
+  background-color: #F4B942;
+  color: #4059AD;
+  border: 1px solid #546bb5;
+  border-radius: 10px;
   cursor: pointer;
+  font-size: 14px;
 }
 
 .notification {
@@ -258,12 +262,12 @@ input[type="text"][required] + label[placeholder]:before {
   font-weight: bold;
   font-size: 20px;
   margin:5px 0px 8px 0px;
-  color: #ccc;
+  color: #546bb5;
 
 }
 
 #add-discount {
-    border: 2px solid white;
+    border: 2px solid #4059AD;
     border-radius: 18px;
     height: 45px;
     padding: 10px 18px;
@@ -271,18 +275,16 @@ input[type="text"][required] + label[placeholder]:before {
     justify-content: center;
     align-items: center;
     transition: all 0.5s ease;
-    size:18px; 
-         }
+    font-size:14px; 
+  }
 #add-discount:active{
-    background-color: black;
-    color: white;
     border: 2px solid black;
     cursor: pointer;
         }
 
 
 #add-booking {
-    border: 2px solid white;
+    border: 2px solid #4059AD;
     border-radius: 18px;
     height: 45px;
     padding: 10px 18px;
@@ -290,23 +292,23 @@ input[type="text"][required] + label[placeholder]:before {
     justify-content: center;
     align-items: center;
     transition: all 0.5s ease;
-    size:18px; 
+    font-size:14px; 
          }
 #add-booking:active{
-    background-color: black;
-    color: white;
+
     border: 2px solid black;
     cursor: pointer;
         }
 
 #popup-button {
   width: 100%;
-  border: 2px solid rgb(88, 53, 121);
+  border: 2px solid #4059AD;
   border-radius: 10px;
   height: 60px;
-  color: rgba(152, 63,255);
-  background-color: none;
+  color: #4059AD;
+  background-color: #EFF2F1;
   transition: 0.2s ease;
+  font-size: 14px;
 }
 
 #popup-button:hover {

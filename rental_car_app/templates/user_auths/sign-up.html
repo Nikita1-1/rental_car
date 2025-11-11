@@ -6,31 +6,20 @@
         <div class="fullwidth_block search_categorie_block main">
             <div class="container">
                 <div class="row">
-                    <div class="mobile_sign_up col-md-12" style="width: 100%;
+                    <div class="mobile_sign_up col-md-10" style="width: 100%;
                                             display: flex;
                                             flex-direction: column;
                                             justify-content: center;
-                                            align-items: center;margin-top: 110px;">
+                                            align-items: center;margin-top: 100px;">
                         <br>
-                        <h2 style="color: white; font-size: 20px;">Create an Account</h2>
+                        <h2 style="color: #4059AD; font-size: 20px; margin-bottom: 20px;">Create an Account</h2>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-12">
+            <!-- <div class="col-md-12"> -->
                 <div class="container">
-                    <div class="row">
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                            <div class="category_container_item_part card card=">
-                                <div class="utf_signin_form style_one">
-                                    <ul class="utf_tabs_nav">
-                                        <!-- <li class=""><a href="#tab1">Log In</a></li> -->
-                                    </ul>
-                                    <div class="tab_container alt">
-                                        
-        
-                                        <!-- register.html -->
-                                    <div class="register-card">
+                    
                                     <form method="POST" enctype="multipart/form-data" class="register-form" action="{% url 'user_auths:sign-up' %}">
                                         {% csrf_token %}
 
@@ -145,16 +134,14 @@
                                 </div>
 
                                     </div>
-                                </div>
-                            </div>
-                        </div>
+                             
 
                      
 
                     </div>
                 </div>
             </div>
-        </div>
+        <!-- </div> -->
         <div class="clearfix"></div>
 
         <script>
@@ -201,7 +188,7 @@
 .register-card h2 {
   text-align: center;
   margin-bottom: 1.5rem;
-  color: white;
+  color: #4059AD;
 }
 
 /* Floating label fields */
@@ -209,18 +196,20 @@
   position: relative;
   margin-bottom: 1.1rem;
   width: 390px;
+  font-size: 14px;
+  color: #4059AD;
 }
 
 .floating-field input {
   width: 100%;
   padding: 0.75rem 0.25rem;
   border: none;
-  border-bottom: 2px solid #ccc;
+  border-bottom: 2px solid #4059AD;
   background: transparent;
   font-size: 16px;
   outline: none;
   transition: border-color 0.2s ease;
-  color: rgb(167, 165, 165);
+  color: #4059AD;
 }
 
 
@@ -232,12 +221,12 @@
   transform: translateY(-50%);
   padding: 0px 8px 8px 0px;
   color: #777;
-  font-size: 16px;
   pointer-events: none;
   transition:
     transform 0.2s ease,
     font-size 0.2s ease,
     color 0.2s ease;
+font-size: 14px;
 }
 
 .floating-field input:focus + label,
@@ -267,6 +256,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.5em;
+  font-size: 14px;
 }
 
 .file-upload-button .button .text {
@@ -290,7 +280,7 @@
 
 .file-upload-button .button:hover {
   background-color: transparent;
-  color: #fff;
+  color: #4059AD;
 }
 
 .file-upload-button .button svg {
@@ -306,11 +296,12 @@ input[type="submit"] {
     background-color: transparent;
     width : 100%;
     height: 51px;
-    border: 2px solid white;
-    color: white;
+    border: 2px solid #4059AD;
+    color: #4059AD;
     border-radius: 20px;
     width: 390px;
     transition: all 0.5s ease;
+    font-size: 14px;;
 }
 
 input[type="submit"]:hover{

@@ -7,19 +7,21 @@
         <div class="trip_info">
             <h1 class="info">
                 <span class="dates">
-                    <img class="date_icon" src="/media/date_icon.png" alt="">
+                    <img class="date_icon" src="/media/date_icon.png" alt="car rental dates">
+                    From: 
                     {{checkin}}
+                    To: 
                     {{checkout}}
                 </span>
-                <span class="location"><img class="location_img" src="/media/location.png" alt=""> <a href="https://maps.app.goo.gl/U9sMdvDSXXhdX2cZ9" class="listing-address"> <i class=""></i>Pick Up: {{car.location}} </a></span>
-                <span class="call_now"><img class="call_img" src="/media/phone.png" alt=""><i class=""></i>Contact: </span>
+                <span class="location"><img class="location_img" src="/media/location.png" alt="car rental location"> <i class=""></i>Pick Up: {{delivery_location}} - Delivery price: {{delivery_price}}</a></span>
+                <span class="call_now"><img class="call_img" src="/media/phone.png" alt="contact rental car"><i class=""></i>Contact: </span>
                     <p class="info">
                         Car: 
                         {{car.make}} 
                         {{car.model}}
                         {{car.year}}
                     </p>
-                    <p id="total-price-display">Total: ${{car_total_price}}</p>
+                    <p id="total-price-display">Total: <span style="color: #4059AD; font-size: 14px;">${{car_total_price}}</span></p>
                 </h1>
             </div>
         </div>
@@ -55,38 +57,18 @@
                     <input type="hidden" class="total_price_{{total_price}}" name="total_price" value="{{car_total_price}}" id="total_price">
                     <input type="hidden" class="check_in_time_{{check_in_time}}" name="check_in_time" value="{{check_in_time}}" id="check_in_time">
                     <input type="hidden" class="check_out_time_{{check_out_time}}" name="check_out_time" value="{{check_out_time}}" id="check_out_time">
+                    <input type="hidden" class="delivery{{delivery_location}}" name='delivery' value="{{delivery_location}}" id="delivery">
+                    <input type="hidden" class="delivery_price{{delivery_price}}" name='delivery_price' value="{{delivery_price}}" id="delivery_price">
 
     
-
-                    <div class="mrg additional_delivery_option">
-                        <div class="delivery">
-                          <label for="delivery-option">Delivery Option</label>
-                          <select name="delivery" id="delivery-option" required>
-                            <option value="">Pick your delivery</option>
-                            {% for delivery in deliveries %}
-                              <option value="{{ delivery.delivery}}">
-                                {{ delivery.delivery }} - ${{ delivery.price }}
-                              </option>
-                            {% endfor %}
-                          </select>
-                        </div>
-                      
-                        <!-- This input will be shown only when "delivery to you" is selected -->
-                        <div id="address-input" style="display: none; margin-top: 10px;">
-                          <label for="delivery-address">Enter delivery address</label>
-                          <input type="text" id="delivery-address" name="delivery_address" placeholder="Enter your address" />
-                        </div>
-                      </div>
-
-
                     <div class="mrg flight_number">
-                        <label for="">Flight Number</label>
+                        <label style="color: #4059AD;">Flight Number</label>
                         <input type="text" name="flight_number" id="flight_number" value="" placeholder="Enter your flight number" >
                     </div>
                     
                     <div class="mrg additional_baby_seat">
                         <div class="baby_option">
-                            <label for="">Select A Baby Seat</label>
+                            <label style="color: #4059AD;">Select A Baby Seat</label>
                             <select name="baby_seat" id="seat-option" class="" required>
                                 <option value="">Select a baby seat</option>
                                 {% for seat in baby_seats %}
@@ -98,7 +80,7 @@
                     
                     <div class="mrg additional_rack">
                         <div class="rack ">
-                            <label for="">Select a rack</label>
+                            <label style="color: #4059AD;" for="">Select a rack</label>
                             <select name="rack" class="" id="rack" required>
                                 <option value="{{rack.name}} - ${{rack.price}}">Rack</option>
                                 {% for rack in racks %}
@@ -108,14 +90,14 @@
                         </div>
                     </div>
                     <div class="mrg toggle_wrapper">
-                        <label class="toggle_lable" for="prepaid_fuel">Prepaid Fuel</label>
+                        <label class="toggle_lable" style="color: #4059AD;" for="prepaid_fuel">Prepaid Fuel</label>
                         <label class="switch">    
                             <input type="checkbox" name="prepaid_fuel" id="prepaid_fuel" value="False" {% if booking.prepaid_fuel %}checked{% endif %}>
                             <span class="slider"></span>
                         </label>
                     </div>
                     <div class="mrg toggle_wrapper">
-                        <label class="toggle_lable" for="second_driver">Second Driver</label>
+                        <label class="toggle_lable" style="color: #4059AD;" for="second_driver">Second Driver</label>
                         <label class="switch">
                             <input type="checkbox" name="second_driver" id="additional_driver" value="False">{% if booking.additional_driver %}checked{% endif %}>
                             <span class="slider"></span>
@@ -170,9 +152,11 @@
         top: 140px;
         right: 60px;
         width: 600px;
-        border: 2px solid white;
+        border: 2px solid #4059AD;;
         height: auto;
         border-radius: 20px;
+        box-shadow: 10px 10px 14px -2px rgba(0, 0, 0, 0.3);
+        background-color: #6b9ac473;
     }
 
     section > .car_info > .trip_info{
@@ -182,18 +166,24 @@
         align-items: self-start;
         gap:20px;
         padding: 20px;
+        
     }
 
     section > .car_info > .trip_info > .info{
         font-size: 24px;
         font-weight: 600;
-        color:white
+        color:#4059AD;
+        margin-bottom: 5px;
+
     }
 
     .dates{
         display: flex;
         align-items: center;
         gap: 10px;
+        color:#4059AD;
+        font-size: 18px;
+        margin-bottom: 5px;
     }
 
     .date_icon{
@@ -208,13 +198,17 @@
     .location{
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 5px;
+        font-size: 18px;
+        margin-bottom: 5px;
     }
 
     .call_now{
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 4px;
+        font-size: 18px;
+        margin-bottom: 5px;
     }
      .call_img{
         width: 30px;
@@ -223,11 +217,12 @@
 
     .car_features{
         position: absolute;
+        background-color: #6b9ac473;
         top: 140px;
         padding: 40px;
         left: 60px;
         width: 600px;
-        border: 2px solid white;
+        border: 2px solid #4059AD;
         height: auto;
         max-height:660px;
         border-radius: 20px;
@@ -235,11 +230,12 @@
         flex-direction: column;
         gap: 20px;
         z-index:9999999999;
+        box-shadow: 10px 10px 14px -2px rgba(0, 0, 0, 0.3);
     }
 
     .car_features > h3{
         font-size: 24px;
-        color: white;
+        color: #4059AD;
         font-weight: 600;
         margin-left: -10px;
     }
@@ -249,7 +245,7 @@
         justify-content: space-between;
         align-items: center;
         margin: 20px 0;
-        color: white;
+        color: #4059AD;
         font-size: 18px;
     }
 
@@ -269,9 +265,9 @@
     .slider {
         position: absolute;
         cursor: pointer;
-        background-color: black;
+        background-color: rgb(126, 125, 125);
         border-radius: 34px;
-        border:1px solid white;
+        border:1px solid #4059AD;
         top: 0;
         left: 0;
         right: 0;
@@ -297,22 +293,23 @@
     }
 
     input:checked + .slider {
-        background-color: rgb(168, 168, 168);
-        border: 1px solid black
+        background-color: #f4b942;
+        border: 1px solid #4059AD;
     }
 
     input:checked + .slider:before {
         transform: translateX(26px);
-        background-color: rgb(21, 20, 20);
+        background-color: f4b942;
 }
 
 select{
-    color: white;
+    color: #4059AD;
     padding: 7px 15px;
     border-radius: 6px;
-    background-color: transparent;
+    background-color: #eff2f1;
     margin-bottom: 2px;
-    border: 1px solid #ffffff;
+    border: 1px solid #4059AD;
+    font-size: 14px;
 }
 
 option{
@@ -332,32 +329,33 @@ select:active, select:focus{
     align-items: center;
     height: 50px;
     padding: 15px 20px;
-    border: 2px solid white;
-    color: white;
+    border: 2px solid #4059ad;
     border-radius: 20px;
     margin-top:20px;
     position: relative;
     transition: all 0.5s ease;
-  }
-  .add-to-selection:hover{
+    color: #546bb5;
+    background: #EFF2F1;
+    font-size: 14px;
+
+}
+    .add-to-selection:hover{
     transition: all 0.5s ease;
     text-decoration: underline;
-  }
-  
-  .add-to-selection:active{
-    background-color: black;
+    }
+
+    .add-to-selection:active{
     color: white;
     border: 2px solid black;
-
-  }
+    }
 
   #flight_number{
-    color: white;
+    color: #6b9ac473;
     padding: 7px 15px;
     border-radius: 6px;
-    background-color: transparent;
+    background-color: #eff2f1;
     margin-bottom: 2px;
-    border: 1px solid #ffffff;
+    border: 1px solid #4059AD;
 }
 
 
@@ -367,7 +365,7 @@ select:active, select:focus{
     }
     
     section{
-        max-height: 77vh;
+        max-height: 96vh;
         overflow-y:auto;
         margin-bottom:50px;
         padding-bottom: 80px;
@@ -377,13 +375,13 @@ select:active, select:focus{
 
     .car_info{
         top: 110px !important;
-        right: 10px !important;
+        right: 28px !important;
         width: 370px!important;
     }
 
     .car_features{
-        top: 380px;
-        left:10px;
+        top: 365px;
+        left:32px;
         width: 370px;
     }
   }
@@ -392,18 +390,7 @@ select:active, select:focus{
 
 <script>
 
-  document.getElementById("delivery-option").addEventListener("change", function () {
-    const selectedValue = this.value.toLowerCase();
-    const addressInput = document.getElementById("address-input");
 
-    // Check if the selected option contains "delivery to you"
-    if (selectedValue.includes("delivery to you")) {
-      addressInput.style.display = "block";
-    } else {
-      addressInput.style.display = "none";
-    }
-  });
-  
   
   $(document).ready(function(e) {
       
@@ -424,17 +411,7 @@ select:active, select:focus{
         
         let button = $(this);
         let id = button.attr("data-index");
-          
-        let delivery = $("#delivery-option").val();
-        let address = "";
-        if (delivery.toLowerCase().includes("delivery to you")) {
-            address = $("#delivery-address").val();
-            
-            if (!address.trim()){
-                alert("Please enter a delivery address.");
-                return;  // Prevent form submission if address is empty
-            }
-        }    
+    
         let car_slug = $("#car_slug").val();
         let car_id = $("#car_id").val();
         let car_make = $("#car_make").val();
@@ -445,6 +422,8 @@ select:active, select:focus{
         let total_price = $("#total_price").val();
         let check_in_time = $("#check_in_time").val();
         let check_out_time = $("#check_out_time").val();
+        let delivery_option = $("#delivery").val(); 
+        let delivery_price = $("#delivery_price").val();
         
         let flight_number = $("#flight_number").val();
         let prepaid_fuel = $("#prepaid_fuel").is(":checked") ? 'True' : 'False';
@@ -454,7 +433,7 @@ select:active, select:focus{
 
         let csrf_token = $("input[name='csrfmiddlewaretoken']").val();
         
-        let url = `/select/${car_slug}/booking-confirmation/?car_slug=${car_slug}&car_id=${car_id}&car_make=${car_make}&car_model=${car_model}&car_year=${car_year}&checkin=${checkin}&checkout=${checkout}&check_in_time=${check_in_time}&check_out_time=${check_out_time}&total_price=${total_price}&delivery=${delivery}&flight_number=${flight_number}&prepaid_fuel=${prepaid_fuel}&second_driver=${second_driver}&baby_seat=${baby_seat}&rack=${rack}&address=${encodeURIComponent(address)}`;
+        let url = `/select/${car_slug}/booking-confirmation/?car_slug=${car_slug}&car_id=${car_id}&car_make=${car_make}&car_model=${car_model}&car_year=${car_year}&checkin=${checkin}&checkout=${checkout}&check_in_time=${check_in_time}&check_out_time=${check_out_time}&total_price=${total_price}&delivery=${delivery_option}&delivery_price=${delivery_price}&flight_number=${flight_number}&prepaid_fuel=${prepaid_fuel}&second_driver=${second_driver}&baby_seat=${baby_seat}&rack=${rack}}`;
         $.ajax({
             url: '/add_to_selection/',  // Update URL if necessary
             type: 'POST',
@@ -471,13 +450,13 @@ select:active, select:focus{
                 'checkin': checkin,    // checkin
                 'checkout': checkout,  // checkout
                 'total_price': total_price,  // totalPrice
-                'delivery': delivery, // delivery
+                'delivery_price': delivery_price, // deliveryPrice
                 'flight_number': flight_number,  // flightNumber
                 'prepaid_fuel': prepaid_fuel,  // prepaidFuel
                 'second_driver': second_driver, // secondDriver
                 'baby_seat': baby_seat,  // babySeat
                 'rack': rack, // rack
-                'address': address,  // deliveryAddress (if applicable)
+                'delivery': delivery_option,  // deliveryAddress
                 'check_in_time': check_in_time, // checkInTime
                 'check_out_time': check_out_time // checkOutTime
             },
@@ -499,7 +478,7 @@ select:active, select:focus{
             }
         }); 
         
-    }); // Closing the $(".add-to-selection").on("click", function() {...})
+    }); 
 
 }); 
 
@@ -507,64 +486,55 @@ select:active, select:focus{
     const prepaidFuelPrice = 150;
     
     function parsePrice(priceString) {
-        // Remove any non-numeric characters (like $ sign) and parse as a number
-        return parseFloat(priceString.replace(/[^0-9.-]+/g, ""));
+    return parseFloat(priceString) || 0;
+}
+
+function updateTotalPrice() {
+    // Start with base car price
+    let totalPrice = parseFloat(carTotalPrice) || 0;
+
+    // Add baby seat price if selected
+    const babySeatSelect = document.querySelector('select[name="baby_seat"]');
+    if (babySeatSelect && babySeatSelect.value) {
+        const selectedOption = babySeatSelect.options[babySeatSelect.selectedIndex];
+        const babySeatPrice = parsePrice(selectedOption.textContent.split(' - $')[1]);
+        totalPrice += babySeatPrice;
     }
-    
-    function updateTotalPrice(){
-        let totalPrice = carTotalPrice
 
-        const babySeatSelect = document.querySelector('select[name="baby_seat"]');
-        if(babySeatSelect && babySeatSelect.value){
-            const selectedBabySeat = babySeatSelect.options[babySeatSelect.selectedIndex];
-            const babySeatPrice = parsePrice(selectedBabySeat.textContent.split(' - $')[1]);
-            totalPrice += babySeatPrice;
-        }
-
-        const rackSelect = document.querySelector('select[name="rack"]');
-        if (rackSelect && rackSelect.value){
-        const selectedRack = rackSelect.options[rackSelect.selectedIndex];
-        const rackPrice = parsePrice(selectedRack.textContent.split(' - $')[1]);
+    // Add rack price if selected
+    const rackSelect = document.querySelector('select[name="rack"]');
+    if (rackSelect && rackSelect.value) {
+        const selectedOption = rackSelect.options[rackSelect.selectedIndex];
+        const rackPrice = parsePrice(selectedOption.textContent.split(' - $')[1]);
         totalPrice += rackPrice;
-        }
-
-        const prepaidFuelCheckbox = document.getElementById("prepaid_fuel");
-        if (prepaidFuelCheckbox && prepaidFuelCheckbox.checked){
-            totalPrice += prepaidFuelPrice
-        }
-
-        const deliverySelect =  document.querySelector('select[name="delivery"]');
-        if (deliverySelect && deliverySelect.value){
-            const selectedDelivery = deliverySelect.options[deliverySelect.selectedIndex];
-            const deliveryPrice = parsePrice(selectedDelivery.textContent.split(' - $')[1]);
-            totalPrice += deliveryPrice
-        }
-
-        document.getElementById("total-price-display").innerText = "$" + totalPrice.toFixed(2);
-        document.getElementById("total_price").value = totalPrice.toFixed(2);
     }
 
-    document.querySelector('select[name="baby_seat"]').addEventListener("change", updateTotalPrice);
-    document.querySelector('select[name="rack"]').addEventListener("change", updateTotalPrice);
-    document.getElementById("prepaid_fuel").addEventListener("change", updateTotalPrice);
-    document.querySelector('select[name="delivery"]').addEventListener("change", updateTotalPrice);
-
-    window.onload = updateTotalPrice
-
-    // Get the modal, buttons, and close button
-    const modal = document.getElementById('galleryModal');
-    const openGalleryBtn = document.getElementById('openGalleryBtn');
-    const closeGalleryBtn = document.getElementById('closeGalleryBtn');
-
-    // When the user clicks the "View Gallery" button, open the modal
-    openGalleryBtn.onclick = function() {
-        modal.style.display = "block";
+    // Add prepaid fuel if checked
+    const prepaidFuelCheckbox = document.getElementById("prepaid_fuel");
+    if (prepaidFuelCheckbox && prepaidFuelCheckbox.checked) {
+        totalPrice += parsePrice(prepaidFuelPrice);
     }
 
-    // When the user clicks on the "X" button, close the modal
-    closeGalleryBtn.onclick = function() {
-        modal.style.display = "none";
-    }
+    // Add delivery price from hidden input
+    const deliveryPrice = parseFloat(document.getElementById("delivery_price").value) || 0;
+    totalPrice += deliveryPrice;
+
+    // Update display and hidden input
+    document.getElementById("total-price-display").innerText = "$" + totalPrice.toFixed(2);
+    document.getElementById("total_price").value = totalPrice.toFixed(2);
+}
+
+// Add event listeners
+document.addEventListener("DOMContentLoaded", function() {
+    const allExtras = document.querySelectorAll(
+        'select[name="baby_seat"], select[name="rack"], #prepaid_fuel, #delivery_location'
+    );
+    allExtras.forEach(el => el.addEventListener("change", updateTotalPrice));
+
+    // Initial calculation
+    updateTotalPrice();
+});
+
 
     // When the user clicks anywhere outside of the modal, close it
     window.onclick = function(event) {
@@ -574,55 +544,5 @@ select:active, select:focus{
     }
 </script>
 
-<!-- CSS for Styling the Modal and Gallery -->
-<style>
-    /* Modal Style */
-    .gallery-modal {
-        display: none; /* Hidden by default */
-        position: fixed;
-        z-index: 1; /* Sit on top */
-        left: 0;
-        top: 0;
-        width: 100%; /* Full width */
-        height: 100%; /* Full height */
-        overflow: auto; /* Enable scroll if needed */
-        background-color: rgb(0,0,0); /* Fallback color */
-        background-color: rgba(0,0,0,0.8); /* Black with opacity */
-    }
-
-    .gallery-modal-content {
-        position: relative;
-        background-color: #fefefe;
-        margin: 15% auto;
-        padding: 20px;
-        width: 80%; /* Adjust width */
-        max-width: 1000px;
-        text-align: center;
-    }
-
-    .gallery-modal img {
-        width: 100%;
-        max-width: 100%;
-        height: auto;
-        margin-bottom: 10px;
-    }
-
-    /* Close Button Style */
-    .close-btn {
-        position: absolute;
-        top: 0;
-        right: 10px;
-        font-size: 30px;
-        font-weight: bold;
-        color: #fff;
-        background: transparent;
-        border: none;
-        cursor: pointer;
-    }
-
-    .close-btn:hover {
-        color: #ff0000;
-    }
-</style>
 
 {%endblock%}

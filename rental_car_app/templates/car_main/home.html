@@ -2,28 +2,41 @@
 
 {% load static %} 
 {%block content%}
-<div class="mbl_main_container relative w-full min-h-screen flex items-center justify-center bg-black bg-opacity-70" style="font-family: 'chillax';">
+<div class="mbl_main_container relative w-full min-h-screen flex items-center justify-center bg-opacity-70" style="font-family: 'chillax'; background:#EFF2F1">
   <!-- Background image with dark overlay -->
-  <div class="mbl absolute inset-2 bg-cover bg-center" style="background-image: url('https://digital-files-acr.s3.us-east-1.amazonaws.com/hero_img.jpg');">
-    <div class="absolute inset-0 bg-black bg-opacity-60"></div>
+  <div class="mbl absolute inset-2 bg-center" style="background:#EFF2F1;">
+    <div class="absolute inset-0  bg-opacity-60"></div>
   </div>
 
   <!-- Content layer -->
-  <div class="relative z-10 w-full max-w-[1200px] px-6 py-20 flex flex-col items-center text-center">
+  <div class="for_mob relative z-10 w-full max-w-[1200px] px-4 py-10 mt-[10px] flex flex-col items-center text-center">
     <div class="title">
-        <h1 class="text-white mb-4">Drive Luxury.</h1>
-        <h1 class="text-white mb-10">Experience Aspen.</h1>
+        <h1 class="mb-4">Drive Luxury</h1>
+        <h1 class=" mb-4">Experience Aspen</h1>
+        <span class="mb-[40px]" style="color: #f4b942; font-size: 14px; font-weight: 500;">
+          Localy owned & operated car rental service in Aspen, Colorado.
+        </span>
     </div>
     <!-- Booking form -->
-    <div class="frm w-[75%] bg-gradient-to-t from-black/90 to-zinc-800/60 backdrop-blur-sm rounded-2xl p-8">
-      <form method="POST" action="{% url 'booking:check_car_availability' %}" class="flex flex-col md:flex-row md:justify-evenly md:items-end gap-4">
+    <div class="frm w-[100%] backdrop-blur-sm rounded-2xl p-8">
+      <form method="POST" id="car-availability-form"  action="{% url 'booking:check_car_availability' %}" class="flex flex-col md:flex-row md:justify-evenly mt-[10px] md:items-end gap-4">
         {% csrf_token %}
         <input type="hidden" name="car-id" value="{{ car.id }}">
 
+      <div class="delivery_location">
+        <label class="text-white text-[16px]" style="align-items: center"><i class="fa-sharp fa-solid fa-location-dot" style="color: #FFD43B;">&nbsp;</i>Delivery Location</label>
+        <select name="delivery_location" id="delivery_location" class="delivery_selection" required>
+            <option value="" style="font-size: 14px;">Select location</option>
+                {% for loc in locations %}
+                  <option value="{{ loc.id }}">{{ loc.delivery_address }}</option>
+                  {% endfor %}
+        </select>
+      </div>
+
         <!-- Pick-up -->
       <div class="flex flex-col space-y-2">
-        <label class="text-white text-[20px]">Pick-up date & Time</label>
-        <div class="flex gap-2 text-black">
+        <label class="text-white text-[16px]" style=" align-items: center;"><i class="fa-solid fa-calendar-days" style="color: #FFD43B;">&nbsp;</i>Pick-up date & Time</label>
+        <div class="flex">
         
             <!-- Custom Date Input with Visible Placeholder -->
             <div class="relative w-[160px]">
@@ -31,7 +44,7 @@
                 type="date" 
                 id="checkin" 
                 name="checkin"
-                class="peer date_selection bg-white text-black text-[16px] rounded-lg p-2.5 w-full appearance-none focus:outline-none"
+                class="peer date_selection text-[14px] rounded-lg p-2.5 w-full appearance-none focus:outline-none"
                 required>
             </div>
 
@@ -39,7 +52,7 @@
             <input 
               type="time" 
               name="time_in" 
-              class="date_selection bg-white text-black text-[16px] rounded-lg p-2.5 w-[130px] focus:outline-none">
+              class="date_selection time text-[14px] rounded-lg p-2.5 w-[130px] focus:outline-none">
 
         </div>
       </div>
@@ -48,8 +61,8 @@
 
         <!-- Return -->
         <div class="flex flex-col space-y-2">
-        <label class="text-white text-[20px]">Return date & Time</label>
-          <div class="flex gap-2 text-black">
+        <label class="text-white text-[16px]" style="align-items: center";><i class="fa-solid fa-house" style="color: #FFD43B;">&nbsp;</i>Return date & Time</label>
+          <div class="flex ">
 
               <!-- Custom Date Input with visible mm/dd/yyyy -->
             <div class="relative w-[160px]">
@@ -57,7 +70,7 @@
                 type="date" 
                 id="checkout" 
                 name="checkout"
-                class="peer date_selection bg-white text-black text-[16px] rounded-lg p-2.5 w-full appearance-none focus:outline-none"
+                class="peer date_selection text-[14px] rounded-lg p-2.5 w-full appearance-none focus:outline-none"
                 required>
 
             </div>
@@ -66,39 +79,83 @@
             <input 
               type="time" 
               name="time_out" 
-              class="date_selection bg-white text-black text-[16px] rounded-lg p-2.5 w-[130px] focus:outline-none">
+              class="date_selection time text-[14px] rounded-lg p-2.5 w-[130px] focus:outline-none">
             
           </div>
         </div>
-
-        <!-- Submit -->
-        <div class="flex items-end justify-center">
-          <button type="submit" class="btn text-white px-6 py-3">
-            Find a car
-          </button>
-        </div>
       </form>
+      
+              <!-- Submit -->
+      <div class="flex items-end justify-center">
+        <button type="submit" 
+          form="car-availability-form" 
+          class="btn text-white px-6 py-3">
+          <i class="fa-solid fa-magnifying-glass">&nbsp;&nbsp;</i>
+          Find a car
+        </button>
+      </div>
     </div>
+    <p class="log_in">Already Have an Account?</p><a href="{% url 'user_auths:sign-in'%}" class="sign-in hover:underline"> Sign in</a>
   </div>
 </div>
 
         
 <style>
+  .log_in{
+    color: #6b9bc4c4;
+    margin-top: 20px;
+    font-size: 14px;
+  }
+
+
+  .sign-in{
+    text-decoration: underline;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .delivery_selection{
+    color: #4059AD;
+    background: none;
+    height: 45px;;
+    border:1px solid #4059AD;
+    border-radius: 10px;
+    width: 340px;
+    font-size: 14px;
+  }
+
+  .date_selection{
+    color: #4059AD;
+    background: none;
+    height: 45px;;
+    border:1px solid #4059AD;
+    border-radius: 10px 0px 0px 10px;
+    font-size: 14px;
+  }
+
+  .time{
+    border-radius: 0px 10px 10px 0px;
+  }
+
   .frm{
-    margin-left: -28px;
+    
+    height: 240px;
+    background: #6b9ac473;
+    box-shadow: 10px 10px 14px -2px rgba(0, 0, 0, 0.3);
   }
   label{
     display: flex;
     justify-content: start;
   }
   h1{
-    color: white;
-    font-size: 60px;
-    margin-right: 30px;
+    color:  #4059AD;
+    font-size: 50px;
+    margin-right: 10px;
   }
 
    .title{
     display:flex;
+    flex-direction: column;
    }
 
   .date{
@@ -106,41 +163,49 @@
   }
 
   .btn{
-    padding: 15px 20px;
-    border: 2px solid white;
-    color: white;
+       padding: 15px 20px;
+    border: 2px solid #4059ad;
+    color: #546bb5;
     border-radius: 20px;
     transition: all 0.5s ease;
     height: 52px;
     align-items: center;
     display: flex;
     justify-content: center;
+    width: 92%;
+    margin-top: 40px;
+    background: #EFF2F1;
   }
   .btn:active{
-    background-color: black;
-    color: white;
+ 
+    color: rgb(0, 0, 0);
     border: 2px solid black;
 
   }
 
-@media screen and (max-width: 450px){
+@media screen and (max-width: 460px){
+
+  .for_mob{
+    margin-top: 80px;
+  }
 
   input.date_selection{
-    color: #000;
+    color: #4059AD;
     
   }
   input.date_selection,
     input[type="date"],
     input[type="time"] {
-        color: #000 !important;
-        -webkit-text-fill-color: #000 !important;
+        color: #4059AD !important;
+        -webkit-text-fill-color: #4059AD !important;
         -webkit-appearance: none;
-        background-color: #fff !important;
-        font-size: 16px;
+        background-color: none !important;
+        font-size: 14px;
+        width:180px;
     }
 
   h1{
-    font-size: 28px;
+    font-size: 40px;
     margin:0px 0px 5px 0px;
   }
 
@@ -160,7 +225,6 @@
     flex-direction: column;
     width: 100%;
     align-items: center;
-    margin-left: 5px;
     height: 100%;
   }
 
@@ -176,7 +240,8 @@
   }
 
   .btn{
-    margin-top:5px;
+    margin-top:20px;
+    width: 340px;
   }
 }
  

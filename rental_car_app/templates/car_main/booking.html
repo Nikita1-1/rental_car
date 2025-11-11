@@ -6,18 +6,18 @@
   <div class="form">
 <form class="billing_form" id="billingForm" method="POST" action="{% url 'car_main:selected_car' %}">
     {% csrf_token %}
-    <h1 style="color: white; position: absolute; top:20px; left: 25px; font-size: 24px;">Billing Information</h1>
+    <h1 style="color: #4059AD; position: absolute; top:20px; left: 25px; font-size: 18px;">Billing Information</h1>
     <div class="row">
       <div class="">
-      <label>First Name</label>
+      <label style="color: #4059AD;">First Name</label>
       <input class="stl" name="full_name" type="text" value="{{request.user.profile.full_name|title}}" placeholder="First Name">
       </div>
       <div class="">
-        <label>E-Mail</label>
+        <label style="color: #4059AD;">E-Mail</label>
         <input class="stl" name="email" type="text" value="{{request.user.email}}" placeholder="Email">
       </div>
       <div class="medium-icons">
-        <label>Phone</label>
+        <label style="color: #4059AD;">Phone</label>
         <input class="stl" name="phone" type="text" value="{{request.user.phone}}" placeholder="Phone">
       </div>
       <input type="hidden" name="car_slug" value="{{ selected_car.car_slug }}" id="car_slug">
@@ -47,11 +47,7 @@
       <li>Total Cost: <span>${{selected_car.total_price}}</span></li>
       <li>Delivery: 
         <span>
-          {{ selected_car.delivery }}
-          {% if "delivery to you" in selected_car.delivery|lower and delivery_address %}
-  <br class="address"><span class='ad' style="color:white">Address:</span> {{ delivery_address }}
-{% endif %}
-      
+          {{ selected_car.delivery_option }}
         </span>
       </li>
     </ul>
@@ -63,12 +59,12 @@
 <style>
 
   .stl{
-    color: white;
+    color: #4059AD;
     padding: 7px 15px;
     border-radius: 6px;
     background-color: transparent;
     margin-bottom: 2px;
-    border: 1px solid #ffffff;
+    border: 2px solid #4059AD !important;
   }
   .wrapper{
     display: flex;
@@ -80,26 +76,23 @@
   }
   .form{
     display: flex;
-    width: auto;
-    height: auto;
+    position: relative;
+    width: 100%;
+    height: 90%;
     flex-direction: column;
     justify-content: flex-start;
-    align-items: center;
-    width: 100%;
-    height: 100%;
+    
   }
 
   .billing_form{
-    width: 40%;
-    height: 40%;
+    width: 30%;
     padding: 40px;
-    background-color: none;
-    border: 2px solid white;
-    border-radius: 18px;
-    position: absolute;
+    background: #EFF2F1;
+    box-shadow: 10px 10px 14px -2px rgba(0, 0, 0, 0.3);
+    border-radius: 20px;
+    position: relative;
     top:140px;
     left:60px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
   }
 
   .row{
@@ -110,31 +103,27 @@
     margin-left: -15px;
   }
 
-  .button_to_checkout{
-    width: 250px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 55px;
-    padding: 15px 20px;
-    border: 2px solid white;
-    color: white;
-    border-radius: 20px;
-    position: absolute;
-    top: 60%;
-    left:60px;
-    transition: all 0.5s ease;
-  }
+.button_to_checkout {
+  width: 250px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 55px;
+  padding: 15px 20px;
+  color: #546bb5;
+  border-radius: 20px;
+  position: absolute;
+  font-size: 14px;
+  top: 150%;
+  left: 13%;
+  transform: translateX(-50%);
+  transition: all 0.5s ease;
+  background: #EFF2F1;
+  border: 2px solid #4059ad;
+}
   .button_to_checkout:hover{
     transition: all 0.5s ease;
     text-decoration: underline;
-  }
-  
-  .button_to_checkout:active{
-    background-color: black;
-    color: white;
-    border: 2px solid black;
-
   }
 
   .booking_info{
@@ -148,21 +137,20 @@
     height: auto;
     padding: 60px;
     padding-bottom: 30px;
-    background-color: none;
-    border: 2px solid white;
+    background-color: #EFF2F1;
     border-radius: 18px;
     position: absolute;
     top:140px;
     right:60px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 10px 10px 14px -2px rgba(0, 0, 0, 0.3);
   }
 
   .ad{
-    color: white;
+    color: #4059AD;
   }
 
   .summary{
-    color: white;
+    color: #4059AD;
     font-size: 24px;
     margin-bottom: 20px;
     position: inherit;
@@ -178,13 +166,13 @@
     font-size: 20px;
   }
   .summary-list li{
-    color: white;
-    font-size: 20px;
+    color: #6b9bc4c4;
+    font-size: 18px;
     margin-bottom: 5px;
   }
 
   .summary-list li span{
-    color: rgb(188, 186, 186);
+    color: #4059AD;
   }
 
 
@@ -200,24 +188,25 @@
   .form {
     flex: 1;
     padding: 20px;
+    justify-content: space-around;
   }
   .billing_form{
-    top: 80px;
+    top: -100px;
     left:5px;
     width:95%;
-    height: 50%;
+    height: auto;
   }
 
   .button_to_checkout{
     width: 370px;
-    top: 2%;
-    left: 6px;
+    top: 10%;
+    left: 216px;
   }
 
   .booking_info{
-    top: 470px;
-    right:13px;
-    width: 95%;
+    top: 540px;
+    right:32px;
+    width: 89%;
   }
 
   .row{

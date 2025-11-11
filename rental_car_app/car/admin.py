@@ -11,7 +11,7 @@ class Car_Images(admin.TabularInline):
     model = CarGallery
 
 class DeliveryAdmin(admin.TabularInline):
-    model = Delivery
+    model = Delivery_feature
 
 class Car_Features(admin.TabularInline):
     model = FeaturedCar
@@ -54,9 +54,8 @@ class CouponAdmin(admin.ModelAdmin):
     search_fields = ['code']
     list_display = ['code', 'type', 'redemption', 'date', 'active', 'make_public', 'valid_from', 'valid_to']
 
-class Delivery_Admin_(admin.ModelAdmin):
-    search_fields = ['delivery']
-    list_display = ['delivery', 'price']
+class Delivery_Admin(admin.ModelAdmin):
+    list_display = ['delivery_address', 'price']
 
 class FeaturesAdmin(admin.ModelAdmin):
     search_fields = ['name', 'desc']
@@ -80,11 +79,11 @@ class MyAdminSite(AdminSite):
         ]
         return custom_urls + urls
         
-admin.site = MyAdminSite(name='myadmin')
-admin.site.register(Racks_feature, Racks_Admin)
-admin.site.register(BabySeat, Baby_Seats_Admin)
-admin.site.register(Delivery, Delivery_Admin_) 
-admin.site.register(Features, FeaturesAdmin)
-admin.site.register(Booking, BookingAdmin)
-admin.site.register(Coupon, CouponAdmin)
-admin.site.register(Car, CarAdmin)
+my_admin_site = MyAdminSite(name='myadmin')
+my_admin_site.register(BabySeat, Baby_Seats_Admin)
+my_admin_site.register(Racks_feature, Racks_Admin)
+my_admin_site.register(Delivery_feature, Delivery_Admin) 
+my_admin_site.register(Features, FeaturesAdmin)
+my_admin_site.register(Booking, BookingAdmin)
+my_admin_site.register(Coupon, CouponAdmin)
+my_admin_site.register(Car, CarAdmin)

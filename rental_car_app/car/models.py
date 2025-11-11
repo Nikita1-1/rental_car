@@ -4,7 +4,6 @@ from django.db import models
 import shortuuid
 #from weasyprint import HTML
 from io import BytesIO
-from user_auths.models import User
 from django.utils.text import slugify
 from shortuuid.django_fields import ShortUUIDField
 from django.utils.html import mark_safe
@@ -65,6 +64,18 @@ PAYMENT_STATUS = (
     ('expired', 'expaired'),
     ("failed", "failed")
 )
+
+# DELIVERY_ADDRESS_CHOICES = (
+#     ('AABC Airport 408 Aspen Airport, Unit 1', 'AABC Airport 408 Aspen Airport, Unit 1'),
+#     ('Aspen Airport', 'Aspen Airport'),
+#     ('Atlantic Aviation Aspen Airport', 'Atlantic Aviation Aspen Airport'),
+#     ('Aspen Little Nell Hotel', 'Aspen Little Nell Hotel'),
+#     ('Aspen St Regis Hotel', 'Aspen St Regis Hotel'),
+#     ('Snowmass Village Viceroy Hotel', 'Snowmass Village Viceroy Hotel'),
+#     ('Glenwood Springs Maxwell Anderson Hotel', 'Glenwood Springs Maxwell Anderson Hotel'),
+#     ('Rifle Garfiel County Airport', 'Rifle Garfield County Airport'),
+#     ('Other', 'Other'),
+# )
     
 class Features(models.Model):
     name = models.CharField(max_length=50)
@@ -73,6 +84,24 @@ class Features(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.desc[:30]}..." if self.desc else self.name
+    
+
+
+class Delivery_feature(models.Model):
+    delivery_address = models.CharField(max_length=100, null=True, blank=True, default=None)
+    price = models.DecimalField(max_digits=12, decimal_places=2, default=00.00)  # Set default price
+    slug = models.SlugField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.delivery_address} - ${self.price}"
+    
+    def save(self, *args, **kwargs):
+        if self.slug == "" or self.slug is None:
+            uuid_key = shortuuid.uuid()
+            uniqueid = uuid_key[:4]
+            self.slug = slugify(self.delivery_address) + "-" + str(uniqueid.lower())
+        super(Delivery_feature, self).save(*args, **kwargs)
+
 
 class Car(models.Model):
     cid = ShortUUIDField(unique=True, length=8, max_length=10)
@@ -80,8 +109,8 @@ class Car(models.Model):
     model = models.CharField(max_length=60)
     year = models.CharField(max_length=4, null=False, blank=False)
     description = CKEditor5Field(null=False, blank=False, config_name='extends')
+    locations = models.ManyToManyField(Delivery_feature, blank=True, related_name='cars')
     image = models.FileField(upload_to='car_images/', blank=True, null=True)  # Specify the upload folder
-    location = models.CharField(max_length=350)
     status = models.CharField(max_length=20, choices=RENTAL_STATUS, default="Available")
     date = models.DateTimeField(auto_now_add=True)
     tags = TaggableManager(blank=True)
@@ -105,8 +134,7 @@ class Car(models.Model):
 
     def car_gallery(self):
         return CarGallery.objects.filter(car=self)
-    
-
+  
     
 
 class Booking(models.Model):
@@ -114,7 +142,7 @@ class Booking(models.Model):
     car = models.ForeignKey(Car, on_delete=models.SET_NULL, blank=True, null=True, related_name='bookings')
     payment_status = models.CharField(max_length=120, choices=PAYMENT_STATUS)
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    delivery_address = models.CharField(max_length=1000, null=True, blank=True)
+    # delivery_address = models.CharField(max_length=250, choices=DELIVERY_ADDRESS_CHOICES, null=True, blank=True)
     full_name = models.CharField(max_length=1000, null=True, blank=True)
     acknowledged = models.BooleanField(default=False)
     agreement_pdf = models.FileField(upload_to='agreements/', null=True, blank=True)
@@ -154,7 +182,6 @@ class Booking(models.Model):
     data = models.DateTimeField(auto_now_add=True)
     booking_id = ShortUUIDField(unique=True, length=10, max_length=15)
     success_id = ShortUUIDField(length=300, max_length=505, alphabet="abcdefghijklmnopqrstuvxyz1234567890")
-  
 
     stripe_payment = models.CharField(max_length=1000, null=True, blank=True)
     def __str__(self):
@@ -162,6 +189,7 @@ class Booking(models.Model):
     
     def is_available(self, check_in_date, check_out_date):
         return not (self.check_in_date <= check_out_date and self.check_out_date >= check_in_date)
+
 
 
 
@@ -196,40 +224,15 @@ class BabySeat(models.Model):
             self.slug = slugify(self.name) + "-" + str(uniqueid.lower())
         super(BabySeat, self).save(*args, **kwargs)
 
-
-class Delivery(models.Model):
-    delivery = models.CharField(max_length=150, choices=DELIVERY, blank=False, null=False, default='Pick Up')
-    price =  models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
-    slug = models.SlugField(null=True, blank=True)
-    
-
-    def __str__(self):
-        return f"{self.delivery} - ${self.price}"
-
-    def save(self, *args, **kwargs):
-        if self.slug == "" or self.slug is None:
-            uuid_key = shortuuid.uuid()
-            uniqueid = uuid_key[:4]
-            self.slug = slugify(self.delivery) + "-" + str(uniqueid.lower())
-        super(Delivery, self).save(*args, **kwargs)
-
-    @property
-    def delivery_price(self):
-        if self.delivery == 'Pick Up':
-            return 0.00
-        elif self.delivery == 'Deliver to you':
-            return 150.00
-        return 0.00
-
 class Booking_Features(models.Model):
     booking = models.ForeignKey(Booking, related_name='booking_features', on_delete=models.CASCADE)
     prepaid_fuel = models.BooleanField(default=False)
     prepaid_fuel_price = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     additional_driver = models.BooleanField(default=False)
     flight_number = models.CharField(max_length=40, blank=True, null=True)
-    delivery = models.ForeignKey(Delivery, on_delete=models.SET_NULL, null=True, blank=True)
     baby_seat = models.ForeignKey(BabySeat, on_delete=models.SET_NULL, null=True, blank=True)
     racks = models.ForeignKey(Racks_feature, on_delete=models.SET_NULL, null=True, blank=True)
+    Delivery_feature = models.ForeignKey(Delivery_feature, on_delete=models.SET_NULL, null=True, blank=True)
     hfid = ShortUUIDField(unique=True, length=10, max_length=20, alphabet="abcdefghijklmnopqrstuvxyz")
 
     def __str__(self):

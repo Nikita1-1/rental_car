@@ -29,13 +29,20 @@ def check_car_availability(request):
         checkout = request.POST.get('checkout')
         time_in = request.POST.get('time_in')
         time_out = request.POST.get('time_out')
+        delivery_id = request.POST.get('delivery_location')
+        try:
+            delivery_obj = Delivery_feature.objects.get(id=delivery_id)
+            delivery = delivery_obj.delivery_address
+            delivery_price = delivery_obj.price
+        except Delivery_feature.DoesNotExist:
+            delivery = "Not selected"
+            delivery_price = 0
 
         check_in_date = datetime.strptime(checkin, '%Y-%m-%d').date()
         check_out_date = datetime.strptime(checkout, '%Y-%m-%d').date()
         check_in_time = datetime.strptime(time_in, '%H:%M').time()
         check_out_time = datetime.strptime(time_out, '%H:%M').time()
 
-        total_price = 0
 
         available_cars = Car.objects.all()
         for c in available_cars:
@@ -64,6 +71,8 @@ def check_car_availability(request):
             'time_in': check_in_time,
             'time_out': check_out_time,
             'total_price': car_total_price,
+            'delivery': delivery,
+            'delivery_price': delivery_price,
         })
 
 def add_to_selection(request):
@@ -78,7 +87,8 @@ def add_to_selection(request):
         'total_price': request.POST['total_price'],
         'checkin': request.POST['checkin'],
         'checkout': request.POST['checkout'],
-        'delivery': delivery,
+        'delivery_option': request.POST['delivery'],
+        "delivery_price": request.POST['delivery_price'],
         'flight_number': request.POST['flight_number'],
         'prepaid_fuel': request.POST['prepaid_fuel'] == 'True',
         'second_driver': request.POST['second_driver'] == 'True',
@@ -87,9 +97,6 @@ def add_to_selection(request):
         'check_in_time': request.POST['check_in_time'],
         'check_out_time': request.POST['check_out_time'],
     }
-
-    if delivery.startswith('Delivery to you'):
-        car_selection['address'] = request.POST.get('address', '')
 
     print('car_selection', car_selection)
     if 'selection_data_obj' in request.session:
@@ -140,17 +147,16 @@ def booking_info(request, slug):
         'checkin': selected_car.get('checkin', ''),
         'checkout': selected_car.get('checkout', ''),
         'total_price': selected_car.get('total_price', ''),
-        'delivery': selected_car.get('delivery', 'Pick Up'),
+        'delivery': selected_car.get('delivery', ''),
         'flight_number': selected_car.get('flight_number', ''),
         'prepaid_fuel': selected_car.get('prepaid_fuel', False),
         'second_driver': selected_car.get('second_driver', False),
         'baby_seat': baby_seat_obj,
         'rack': rack_obj,
-        'delivery_address': selected_car.get('address', ''),
         
 
     }
-    print('selected_car', selected_car)
+
     return render(request, 'car_main/booking.html', context)
 
 def delete_session(request):

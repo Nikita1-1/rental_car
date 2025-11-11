@@ -43,59 +43,77 @@
   <link href="https://api.fontshare.com/v2/css?f[]=chillax@300,400,500,600&display=swap" rel="stylesheet">
 
 </head>
-<body class="relative min-h-screen bg-black text-white" style="font-family: 'chillax', sans-serif;">
-  
-  <!-- Background Video Container -->
+<body style="padding:0;"class="relative min-h-screen text-white bg-[#EFF2F1] font-[chillax,sans-serif]">
 
-  <span id='classMenu'class="box absolute top-[30%] left-[38%] transform -translate-x-1/2 -translate-y-1/2">
-      <div class="flex flex-col justify-center items-center space-y-4 font-chillax z-[9999] w-full h-full">
-          <a href="{% url 'dashboard:dashboard'%}" class="hover:underline">Booking</a>
-          <a href="{% url 'faq' %}" class="hover:underline">FAQ</a>
-          <a href="{% url 'contact'%}" class="hover:underline">Contact</a>
-        </div>
-  </span>
+  <!-- ✅ DESKTOP NAVIGATION -->
+  <nav class="desktop_navbar fixed top-0 left-0 w-full flex justify-between items-center px-10 py-6 bg-transparent text-[#2D2E32] font-medium z-50">
+    <div class="logo text-[#6B9AC4] font-bold text-xl tracking-wide">Logo</div>
 
-  <div class="relative w-full h-screen overflow-hidden">
-    <nav class=" mobile_nav absolute left-0 w-full flex justify-between items-center px-8 py-6 text-md z-[50]">
-  
-      <!-- Centered navigation links -->
-      <div class="flex items-center">
-        <button class="fancy-burger">
-            <span class="rectangle rectangle--top rectangle--small"></span>
-            <span class="rectangle rectangle--middle"></span>
-            <span class="rectangle rectangle--bottom rectangle--small"></span>
-          </button>
-          
-      </div>
-      <div class="flex items-center space-x-4 font-chillax">
-        {% if user.is_authenticated %}
-        <div class="in">
-          <a href="{% url 'user_auths:logout'%}" class=" log-out hover:underline"> Log Out</a>
-          <a href="{% url 'dashboard:dashboard'%}" class="booking hover:underline"> Booking</a>
-        </div>
-          {% else %}
-        <div class="out">
-          <a href="{% url 'user_auths:sign-in'%}" class="sign-in hover:underline"> Sign in</a>
-          <a href="{% url 'user_auths:sign-up'%}" class="sign-up hover:underline"> Sign Up</a>
-        </div> 
-        {% endif %}
-      </div>
-    </nav>
-      <!-- Slide-down Menu -->
-      
-      
-      
-      <!-- Content Block, Centered on Video -->
-      <div class="content relative z-10 flex items-center justify-center h-full">
-        {% block content %}
-        {% endblock content %}
-      </div>
-     <footer class="mbl_footer absolute bottom-0 w-full flex justify-between items-center px-6 pt-4 pb-0 text-md bg-black/50 font-chillax text-white z-10">
-        <span style="color:rgb(157, 156, 156); font-size: 18px;"><a href="{% url 'legal' %}" target="_blank">Legal</a></span>
-        <span style="color:rgb(157, 156, 156)"><span style="font-size: 18px;">&reg</span> All Rights Are Reserved</span>
-        <span></span>
-      </footer>
+    <div class="flex gap-8">
+      <a href="{% url 'car_main:home'%}" style="font-weight: 400; font-size: 14px;" class="hover:text-[#6B9AC4]  weightransition">Home</a>
+      <a href="{% url 'dashboard:dashboard'%}" style="font-weight: 400; font-size: 14px;" class="hover:text-[#6B9AC4] transition">Booking</a>
+      <a href="{% url 'contact'%}" style="font-weight: 400; font-size: 14px;" class="hover:text-[#6B9AC4] transition">Contact</a>
+      <a href="{% url 'faq'%}" style="font-weight: 400; font-size: 14px;" class="hover:text-[#6B9AC4] transition">FAQ</a>
     </div>
+
+    <div class="flex items-center space-x-6 font-semibold">
+      {% if user.is_authenticated %}
+      <div class="in flex space-x-6">
+        <a href="{% url 'user_auths:logout'%}"  class="text-[#4059AD] hover:underline">Log Out</a>
+        <a href="{% url 'dashboard:dashboard'%}"  class="booking bg-[#4059AD] ">Booking</a>
+      </div>
+      {% else %}
+      <div class="out">
+       <a href="{% url 'user_auths:sign-up'%}" style="font-size: 14px; font-weight: 400; border: 1px solid #5672fc;" class="bg-[#F4B942] hover:bg-[#587ea9] px-4 py-2 rounded-[20px] text-[#4059AD] transition">Sign Up</a>
+      </div>
+      {% endif %}
+    </div>
+  </nav>
+<!-- ✅ MOBILE NAVIGATION -->
+<nav class="mobile_nav fixed top-0 left-0 w-full flex justify-around items-center px-6 py-4 text-[#4059AD] z-50 gap-[85%] bg-[#EFF2F1]">
+  <div class="flex items-center">
+    <button id="burgerBtn" class="fancy-burger relative w-8 h-6 flex flex-col justify-between items-center focus:outline-none">
+      <span class="rectangle rectangle--top"></span>
+      <span class="rectangle rectangle--middle"></span>
+      <span class="rectangle rectangle--bottom"></span>
+    </button>
+  </div>
+
+  <div class="logo text-[#6B9AC4] font-bold text-lg tracking-wide">Logo</div>
+
+  <div class="out">
+    <a href="{% url 'user_auths:sign-up'%}" class="bg-[#F4B942] hover:bg-[#587ea9] px-4 py-2 rounded-[20px] text-[#4059AD] transition">Sign Up</a>
+  </div>
+</nav>
+
+<!-- ✅ MOBILE MENU -->
+<div
+  id="burgerMenu"
+  class="mobile-menu hidden flex-col space-y-6 fixed top-[64px] left-0 w-full bg-[#F4B942] text-[#4059AD] rounded-b-lg p-6 shadow-lg z-[60] transition-all duration-300"
+>
+  <a href="{% url 'car_main:home'%}" class="hover:underline">Home</a>
+  <a href="{% url 'dashboard:dashboard'%}" class="hover:underline">Booking</a>
+  <a href="{% url 'contact'%}" class="hover:underline">Contact</a>
+  <a href="{% url 'faq'%}" class="hover:underline">FAQ</a>
+
+  {% if user.is_authenticated %}
+    <a href="{% url 'user_auths:logout'%}" class="hover:underline">Log Out</a>
+  {% else %}
+    <a href="{% url 'user_auths:sign-up'%}" class="hover:underline">Sign Up</a>
+  {% endif %}
+</div>
+  <!-- ✅ PAGE CONTENT -->
+  <main class="content relative z-10 flex items-center justify-center pt-22 pb-24 px-6">
+    {% block content %}
+    {% endblock content %}
+  </main>
+
+  <!-- ✅ FOOTER -->
+  <footer class="absolute bottom-0 w-full flex justify-between items-center px-6 py-4 bg-[#EFF2F1] border-t border-[#6B9AC455] text-[#546bb5b7] text-sm font-chillax z-10">
+    <span><a href="{% url 'legal' %}" target="_blank" class="hover:underline text-[#546bb5bb]">Legal</a></span>
+    <span>&reg; All Rights Reserved</span>
+  </footer>
+
 
     {% for message in messages %}
         <script>
@@ -143,22 +161,40 @@
                 }, 300);
             }
         }
-        const btn = document.querySelector(".fancy-burger");
-        const menu = document.querySelector("#classMenu");
+     
         
+  const burgerBtn = document.getElementById("burgerBtn");
+  const burgerMenu = document.getElementById("burgerMenu");
 
-        btn.addEventListener("click", () => {
-        btn.querySelectorAll("span").forEach((span) => span.classList.toggle("open"));
-        menu.classList.toggle("open");
-        });
+  if (burgerBtn && burgerMenu) {
+    burgerBtn.addEventListener("click", () => {
+      burgerBtn.classList.toggle("open");
+      burgerMenu.classList.toggle("hidden");
+    });
+  }
 
-    </script>
+</script>
+
+  
     <!-- Date Range Picker - docs: http://www.daterangepicker.com/ -->
     <script src="scripts/moment.min.js"></script>
     <script src="scripts/daterangepicker.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
 
+
     <style>
+      
+      .desktop_navbar{
+        display: flex;
+        gap: 40px;
+        margin-left: 30px;
+      }
+
+      a{
+        color:#6B9AC4;
+        font-size: 14px;
+        font-weight: 400;
+      }
       .fade-in-start{
         opacity:0;
         transition: opacity 1.5s ease-in;
@@ -172,6 +208,8 @@
         .in{
             margin-right: 45px;
             margin-top: 10px;
+            display: flex;
+            align-items: center;
             
         }
 
@@ -182,27 +220,32 @@
         .booking{
             border: 2px solid white;
             border-radius: 20px;
-            height: 100px;
-            padding: 15px 20px;
+            height: 40px;
+            padding: 10px 16px;
             transition: all 0.5s ease;
-            size:18px;
+            font-size:14px;
+            font-weight: 400;
+            background-color: #F4B942;
+            color: #4059AD;
+            display: flex;
+            align-items: center;
         
         }
         .booking:active{
-            background-color: black;
+            background-color: #f6af23;
             color: white;
-            border: 2px solid black;
         }
 
         .log-out{
             margin-right: 25px;
-            size: 18px;
+            font-size: 14px;
+            
         }
 
     .book{
         margin-left: 40px;
         margin-top:20px;
-        size: 18px;
+        font-size: 14px;
     }
     body {
       padding: 2rem;
@@ -217,52 +260,7 @@
   --transition: 0.65s;
 }
 
-.fancy-burger {
-  position: relative;
-  width: var(--button-width);
-  height: var(--button-height);
-  border: 0;
-  background: transparent;
-  outline: none;
-  cursor: pointer;
-  margin-left:40px;
-  margin-top: 10px;
-}
-.rectangle {
-  position: absolute;
-  height: var(--rectangle-height);
-  background: white;
-  border-radius: var(--rectangle-radius);
-  transition: transform var(--transition);
-}
-.rectangle--small {
-  width: calc(var(--button-width) / 2);
-}
-.rectangle--top {
-  top: 0;
-  left: 0;
-  transform-origin: top left;
-}
-.rectangle--top.open {
-  transform: translateX(var(--translate)) rotate(45deg);
-}
-.rectangle--middle {
-  top: 50%;
-  left: 0;
-  width: var(--button-width);
-  transform: translatey(-50%);
-}
-.rectangle--middle.open {
-  transform: translatey(-50%) rotate(-45deg);
-}
-.rectangle--bottom {
-  bottom: 0;
-  right: 0;
-  transform-origin: bottom right;
-}
-.rectangle--bottom.open {
-  transform: translateX(calc(-1 * var(--translate))) rotate(45deg);
-}
+
 .box {
   width: 400px;
   height: 280px;
@@ -284,54 +282,84 @@
 
 .sign-up{
   margin-left: 25px;
-  border: 2px solid white;
+  border: 2px solid #6B9AC4;
   border-radius: 24px;
-  padding: 15px 20px;
-}
+  padding: 10px 16px;
+  background-color: #F4B942;
+  font-size: 14px;
+  box-shadow: 2px 3px 12px -1px rgba(0, 0, 0, 0.3);
+}  .rectangle {
+    display: block;
+    width: 100%;
+    height: 3px;
+    background-color: #6B9AC4;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+  }
+
+  .rectangle--top,
+  .rectangle--bottom {
+    width: 80%;
+  }
+
+  .fancy-burger.open .rectangle--top {
+    transform: translateY(9px) rotate(45deg);
+    width: 100%;
+  }
+
+  .fancy-burger.open .rectangle--middle {
+    opacity: 0;
+  }
+
+  .fancy-burger.open .rectangle--bottom {
+    transform: translateY(-9px) rotate(-45deg);
+    width: 100%;
+  }
+
+  /* ✅ Menu open animation */
+  .mobile-menu.open {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: translateY(0) !important;
+  }
+
+    /* Responsive Visibility */
+    .desktop_navbar {
+      display: flex;
+    }
+
+    .mobile_nav,
+    #burgerMenu {
+      display: none;
+    }
 
 @media  screen and (max-width: 460px) {
-  .content{
-        overflow-y: auto;
-        margin-top: 75px;
-        height: 78vh;
-        scrollbar-width: none;
-        width: 100%;
+
+ .desktop_navbar {
+      display: none;
     }
-  
 
-  .mobile_nav{
-    padding-left: 0rem;
-    padding-right: 0rem;
-    padding-top: 0px;
-    margin-top: 10px;
-  }
-  .sign-in{
-    display: none;
-  }
+    .mobile_nav {
+      display: flex;
+    }
 
-  .sign-up{
-    margin-right:-21px;
-  }
+    .content {
+      overflow-y: auto;
+      margin-top: 40px;
+      height: 90vh;
+      scrollbar-width: none;
+      width: 100%;
+      padding: 0;
+    }
 
-  .fancy-burger{
-    margin-left:15px;
-  }
+    .mbl_footer {
+      bottom: 15px;
+    }
 
-  #classMenu{
-    left: 10px;
+    #burgerMenu {
+      display: flex;
+    }
   }
-
-  .log-out{
-    display:none;
-  }
-  .booking{
-    margin-right:-30px;
-  }
-
-  .mbl_footer{
-    bottom:15px;
-  }
-}
 
     </style>
 </body>
