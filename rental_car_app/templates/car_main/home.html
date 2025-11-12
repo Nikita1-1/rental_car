@@ -49,9 +49,10 @@
                 type="date" 
                 id="checkin" 
                 name="checkin"
+                placeholder="Select date"
                 class="peer date_selection text-[14px] rounded-lg p-2.5 w-full appearance-none focus:outline-none"
                 required>
-                <span class="date-placeholder" id="checkin-placeholder">Select date</span>
+                <!-- <span class="date-placeholder" id="checkin-placeholder">Select date</span> -->
             </div>
 
             <!-- Time Input (normal, mobile works fine) -->
@@ -78,7 +79,7 @@
                 name="checkout"
                 class="peer date_selection text-[14px] rounded-lg p-2.5 w-full appearance-none focus:outline-none"
                 required>
-
+              <span class="date-placeholder" id="checkin-placeholder">Select date</span>
             </div>
 
             <!-- Time Input -->
@@ -158,7 +159,7 @@
     left: 10px;
     top: 50%;
     transform: translateY(-50%);
-    color: #999;
+    color: #4059AD;
     pointer-events: none;
     font-size: 14px;
 }
@@ -237,6 +238,12 @@
         width:180px;
     }
 
+  input[type="date"]::-webkit-datetime-edit-text,
+  input[type="date"]::-webkit-datetime-edit-month-field,
+  input[type="date"]::-webkit-datetime-edit-day-field,
+  input[type="date"]::-webkit-datetime-edit-year-field {
+    display: inline-block;
+  }
   h1{
     font-size: 40px;
     margin:0px 0px 5px 0px;
