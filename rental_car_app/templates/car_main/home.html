@@ -52,7 +52,7 @@
                 placeholder="Select date"
                 class="peer date_selection text-[14px] rounded-lg p-2.5 w-full appearance-none focus:outline-none"
                 required>
-                <!-- <span class="date-placeholder" id="checkin-placeholder">Select date</span> -->
+                <img class="calendar" src="/media/calendar.png" alt="">
             </div>
 
             <!-- Time Input (normal, mobile works fine) -->
@@ -60,7 +60,7 @@
               type="time" 
               name="time_in" 
               class="date_selection time text-[14px] rounded-lg p-2.5 w-[130px] focus:outline-none">
-
+              <img class="clock" src="/media/clock.png" alt="">
         </div>
       </div>
 
@@ -77,9 +77,10 @@
                 type="date" 
                 id="checkout" 
                 name="checkout"
+                
                 class="peer date_selection text-[14px] rounded-lg p-2.5 w-full appearance-none focus:outline-none"
                 required>
-              <span class="date-placeholder" id="checkin-placeholder">Select date</span>
+                <img class="calendar" src="/media/calendar.png" alt="">
             </div>
 
             <!-- Time Input -->
@@ -87,7 +88,7 @@
               type="time" 
               name="time_out" 
               class="date_selection time text-[14px] rounded-lg p-2.5 w-[130px] focus:outline-none">
-            
+              <img class="clock" src="/media/clock.png" alt="">
           </div>
         </div>
       </form>
@@ -109,7 +110,13 @@
         
 <style>
 
+  .calendar{
+    display:none;
+  }
 
+  .clock{
+    display:none;
+  }
 
   .log_in{
     color: #6b9bc4c4;
@@ -148,25 +155,6 @@
     font-size: 14px;
   }
 
-  input[type="date"]::-webkit-datetime-edit-text,
-  input[type="date"]::-webkit-datetime-edit-month-field,
-  input[type="date"]::-webkit-datetime-edit-day-field,
-  input[type="date"]::-webkit-datetime-edit-year-field {
-    display: none;
-  }
-  .date-placeholder {
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #4059AD;
-    pointer-events: none;
-    font-size: 14px;
-}
-
-.date-placeholder.hidden {
-    display: none;
-}
 
   .time{
     border-radius: 0px 10px 10px 0px;
@@ -220,6 +208,24 @@
 
 @media screen and (max-width: 460px){
 
+  .calendar{
+    display:block;
+    position: absolute;
+    top: 16px;
+    width: 12px;
+    left: 86%;
+  };
+
+  .clock{
+    display:block;
+    position: relative;
+    width: 13px;
+    height: 11px;
+    left: -8%;
+    /* z-index: 99999999999; */
+    top: 16px;
+  };
+
   .for_mob{
     margin-top: 80px;
   }
@@ -233,7 +239,6 @@
     input[type="time"] {
         color: #4059AD !important;
         -webkit-text-fill-color: #4059AD !important;
-        background-color: none !important;
         font-size: 14px;
         width:180px;
     }
@@ -343,5 +348,11 @@ document.addeventlistener("DOMContentLoaded", function(){
   timeIn.addEventListener("change", () => validateTime(timeIn));
   timeOut.addEventListener("change", () => validateTime(timeOut));
 })
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const input = document.getElementById("checkout");
+    const today = new Date().toISOString().split("T")[0];
+    input.value = today;
+  });
 </script>
         {%endblock content%}
